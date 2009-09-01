@@ -1,4 +1,4 @@
-The Luggage is a project to create a python wrapper to make Apple PKG format
+The Luggage is a project to create a wrapper to make Apple PKG format
 packages.
 
 It does not use the PackageMaker GUI, but it does require that the developer
@@ -6,4 +6,4 @@ tools be installed so it can call the command line version.
 
 Advantages:
 You can get peer review of a package by examining the diffs between versions
-of your python script. No more wading through a zillion annoying GUI panes.
+of your Makefile. No more wading through a zillion annoying GUI panes.
