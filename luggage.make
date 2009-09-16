@@ -1,8 +1,7 @@
-# $Id$
 # 
 # Author: jpb@ApesSeekingKnowledge.net
 #
-# Copyright Joe Block
+# Copyright 2009 Joe Block
 
 STAMP:=`date +%Y%m%d`
 YY:=`date +%Y`
@@ -19,17 +18,27 @@ TITLE=CHANGE_ME
 REVERSE_DOMAIN=com.replaceme
 PACKAGE_ID=${REVERSE_DOMAIN}.${TITLE}
 
-# Override in your makefile if you don't want version set to today's date
+# Set PACKAGE_VERSION in your Makefile if you don't want version set to
+# today's date
 PACKAGE_VERSION=${STAMP}
 
+# Set PACKAGE_NAME in your Makefile if you don't want it to be TITLE-PACKAGEVERSION.
 PACKAGE_NAME=${TITLE}-${PACKAGE_VERSION}
 PACKAGE_FILE=${PACKAGE_NAME}.pkg
 DMG_NAME=${PACKAGE_NAME}.dmg
 
-INSTALL=install
+# Only use Apple tools for file manipulation, or deal with a world of pain
+# when your resource forks get munched.  This is particularly important on
+# 10.6 since it stores compressed binaries in the resource fork.
+TAR=/usr/bin/tar
+CP=/bin/cp
+INSTALL=/usr/bin/install
+
 PACKAGEMAKER=/Developer/usr/bin/packagemaker
 
-# Must be on an HFS+ filesystem.
+# Must be on an HFS+ filesystem. Yes, I know some network servers will do
+# their best to preserve the resource forks, but it isn't worth the aggravation
+# to fight with them.
 LUGGAGE_TMP=/tmp/the_luggage
 SCRATCH_D=${LUGGAGE_TMP}/${PACKAGE_NAME}
 
@@ -69,11 +78,6 @@ PAYLOAD=
 USER_TEMPLATE=${WORK_D}/System/Library/User\ Template
 USER_TEMPLATE_PREFERENCES=${USER_TEMPLATE}/English.lproj/Library/Preferences
 USER_TEMPLATE_PICTURES=${USER_TEMPLATE}/English.lproj/Pictures
-
-# make sure we use apple tar so we don't lose resource forks. This is
-# particularly important on 10.6 since it stores compressed binaries in
-# the resource fork.
-APPLE_TAR=/usr/bin/tar
 
 # target stanzas
 
@@ -159,11 +163,11 @@ ${PACKAGE_PLIST}: ../prototype.plist
 		sed "s/{PM_RESTART}/${PM_RESTART}/g" | \
 	        sed "s/{PLIST_FLAVOR}/${PLIST_FLAVOR}/g" \
 		> .luggage.pkg.plist
-	@sudo cp .luggage.pkg.plist ${SCRATCH_D}/luggage.pkg.plist
+	@sudo ${CP} .luggage.pkg.plist ${SCRATCH_D}/luggage.pkg.plist
 	@rm .luggage.pkg.plist ${PACKAGE_PLIST}
 
 local_pkg:
-	@cp -R ${PAYLOAD_D}/${PACKAGE_FILE} .
+	@${CP} -R ${PAYLOAD_D}/${PACKAGE_FILE} .
 
 # Target directory rules
 
@@ -374,22 +378,22 @@ pack-hookscript-%: % l_etc_hooks
 
 # Applications and Utilities
 #
-# We use ${APPLE_TAR} because it respects resource forks. This is still
+# We use ${TAR} because it respects resource forks. This is still
 # critical - just when I thought I'd seen the last of the damn things, Apple
 # decided to stash compressed binaries in them in 10.6.
 
 unbz2-applications-%: %.tar.bz2 l_Applications
-	sudo ${APPLE_TAR} xjf $<.tar.bz2 -C ${WORK_D}/Applications
+	sudo ${TAR} xjf $<.tar.bz2 -C ${WORK_D}/Applications
 	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.tar\.bz2//g)
 
 unbz2-utilities-%: %.tar.bz2 l_Applications_Utilities
-	sudo ${APPLE_TAR} xjf $< -C ${WORK_D}/Applications/Utilities
+	sudo ${TAR} xjf $< -C ${WORK_D}/Applications/Utilities
 	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.tar\.bz2//g)
 
 ungz-applications-%: %.tar.gz l_Applications
-	sudo ${APPLE_TAR} xzf $<.tar.gz -C ${WORK_D}/Applications
+	sudo ${TAR} xzf $<.tar.gz -C ${WORK_D}/Applications
 	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.tar\.gz//g)
 
 ungz-utilities-%: %.tar.gz l_Applications_Utilities
-	sudo ${APPLE_TAR} xzf $< -C ${WORK_D}/Applications/Utilities
+	sudo ${TAR} xzf $< -C ${WORK_D}/Applications/Utilities
 	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.tar\.gz//g)
