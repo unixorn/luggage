@@ -360,6 +360,9 @@ pack-user-picture-%: % l_Library_Desktop_Pictures
 
 # posixy file stanzas
 
+pack-etc-%: % l_etc
+	sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/etc
+
 pack-usr-bin-%: % l_usr_bin
 	sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/bin
 
