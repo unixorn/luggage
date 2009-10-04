@@ -148,10 +148,10 @@ compile_package: payload .luggage.pkg.plist
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
 
-${PACKAGE_PLIST}: ../prototype.plist
+${PACKAGE_PLIST}: /usr/local/share/luggage/prototype.plist
 # override this stanza if you have a different plist you want to use as
 # a custom local template.
-	@cat ../prototype.plist > ${PACKAGE_PLIST}
+	@cat /usr/local/share/luggage/prototype.plist > ${PACKAGE_PLIST}
 
 .luggage.pkg.plist: ${PACKAGE_PLIST}
 	cat ${PACKAGE_PLIST} | \
@@ -225,6 +225,11 @@ l_usr_local_sbin: l_usr_local
 	@sudo mkdir -p ${WORK_D}/usr/local/sbin
 	@sudo chown -R root:wheel ${WORK_D}/usr/local/sbin
 	@sudo chmod -R 755 ${WORK_D}/usr/local/sbin
+
+l_usr_local_share: l_usr_local
+	@sudo mkdir -p ${WORK_D}/usr/local/share
+	@sudo chown -R root:wheel ${WORK_D}/usr/local/share
+	@sudo chmod -R 755 ${WORK_D}/usr/local/share
 
 l_usr_sbin: l_usr
 	@sudo mkdir -p ${WORK_D}/usr/sbin
