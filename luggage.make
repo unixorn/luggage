@@ -267,6 +267,16 @@ l_Library_Desktop_Pictures: l_Library
 	@sudo chown root:admin ${WORK_D}/Library/Desktop\ Pictures
 	@sudo chmod 775 ${WORK_D}/Library/Desktop\ Pictures
 
+l_Library_LaunchAgents: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/LaunchAgents
+	@sudo chown root:wheel ${WORK_D}/Library/LaunchAgents
+	@sudo chmod 755 ${WORK_D}/Library/LaunchAgents
+
+l_Library_LaunchDaemons: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/LaunchDaemons
+	@sudo chown root:wheel ${WORK_D}/Library/LaunchDaemons
+	@sudo chmod 755 ${WORK_D}/Library/LaunchDaemons
+
 l_Library_Preferences: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Preferences
 	@sudo chown root:admin ${WORK_D}/Library/Preferences
@@ -326,6 +336,12 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 	@sudo chmod -R 700 ${USER_TEMPLATE_PREFERENCES}
 
 # file packaging rules
+
+pack-Library-LaunchAgents-%: % l_Library_LaunchAgents
+	sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchAgents
+
+pack-Library-LaunchDaemons-%: % l_Library_LaunchDaemons
+	sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchDaemons
 
 pack-Library-Preferences-%: % l_Library_Preferences
 	sudo ${INSTALL} -m 644 -g admin -o root $< ${WORK_D}/Library/Preferences
