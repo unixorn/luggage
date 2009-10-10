@@ -1,7 +1,17 @@
 # 
-# Author: jpb@ApesSeekingKnowledge.net
+#   Copyright 2009 Joe Block <jpb@ApesSeekingKnowledge.net>
 #
-# Copyright 2009 Joe Block
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
 
 STAMP:=`date +%Y%m%d`
 YY:=`date +%Y`
@@ -377,6 +387,12 @@ pack-usr-bin-%: % l_usr_bin
 
 pack-usr-sbin-%: % l_usr_sbin
 	sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/sbin
+
+pack-usr-local-bin-%: % l_usr_local_bin
+	sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/bin
+
+pack-usr-local-sbin-%: % l_usr_local_sbin
+	sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/sbin
 
 pack-hookscript-%: % l_etc_hooks
 	sudo ${INSTALL} -m 755 $< ${WORK_D}/etc/hooks
