@@ -168,7 +168,7 @@ ${PACKAGE_PLIST}: /usr/local/share/luggage/prototype.plist
 	@cat /usr/local/share/luggage/prototype.plist > ${PACKAGE_PLIST}
 
 .luggage.pkg.plist: ${PACKAGE_PLIST}
-	cat ${PACKAGE_PLIST} | \
+	@cat ${PACKAGE_PLIST} | \
 		sed "s/{DD}/${DD}/g" | \
 		sed "s/{MM}/${MM}/g" | \
 		sed "s/{YY}/${YY}/g" | \
