@@ -7,3 +7,5 @@ tools be installed so it can call the command line version.
 Advantages:
 You can get peer review of a package by examining the diffs between versions
 of your Makefile. No more wading through a zillion annoying GUI panes.
+
+Full documentation can be found at http://luggage.ApesSeekingKnowledge.net
