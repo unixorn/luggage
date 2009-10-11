@@ -15,7 +15,7 @@
 #
 # Sample package that packages luggage.make and prototype.plist
 
-include /usr/local/share/luggage.make
+include /usr/local/share/luggage/luggage.make
 
 TITLE=luggage
 REVERSE_DOMAIN=net.apesseekingknowledge
@@ -30,4 +30,4 @@ pack-prototype.plist: l_usr_local_share_luggage
 	@sudo ${INSTALL} -m 644 -o root -g wheel prototype.plist ${WORK_D}/usr/local/share/luggage/luggage.make
 
 pack-luggage.make: l_usr_local_share_luggage
-	 sudo ${INSTALL} -m 644 -o root -g wheel luggage.make ${WORK_D}/usr/local/share/luggage/luggage.make
+	 @sudo ${INSTALL} -m 644 -o root -g wheel luggage.make ${WORK_D}/usr/local/share/luggage/luggage.make
