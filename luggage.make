@@ -128,9 +128,13 @@ dmg: scratchdir compile_package
 		-ov \
 		${DMG_NAME}
 
+modify_packageroot:
+	@echo "If you need to override permissions or ownerships, override modify_packageroot in your Makefile"
+
 prep_pkg:
 	@make clean
 	@make payload
+	@make modify_packageroot
 	@make compile_package
 
 pkg: prep_pkg
