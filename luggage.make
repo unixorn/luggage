@@ -361,45 +361,45 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 # file packaging rules
 
 pack-Library-LaunchAgents-%: % l_Library_LaunchAgents
-	sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchAgents
+	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchAgents
 
 pack-Library-LaunchDaemons-%: % l_Library_LaunchDaemons
-	sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchDaemons
+	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchDaemons
 
 pack-Library-Preferences-%: % l_Library_Preferences
-	sudo ${INSTALL} -m 644 -g admin -o root $< ${WORK_D}/Library/Preferences
+	@sudo ${INSTALL} -m 644 -g admin -o root $< ${WORK_D}/Library/Preferences
 
 pack-ppd-%: % l_PPDs
-	sudo ${INSTALL} -m 664 -g admin -o root $< ${WORK_D}/Library/Printers/PPDs/Contents/Resources
+	@sudo ${INSTALL} -m 664 -g admin -o root $< ${WORK_D}/Library/Printers/PPDs/Contents/Resources
 
 pack-script-%: % scriptdir
-	sudo ${INSTALL} -m 755 $< ${SCRIPT_D}
+	@sudo ${INSTALL} -m 755 $< ${SCRIPT_D}
 
 pack-user-template-plist-%: % l_System_Library_User_Template_Preferences
-	sudo ${INSTALL} -m 644 $< ${USER_TEMPLATE_PREFERENCES}
+	@sudo ${INSTALL} -m 644 $< ${USER_TEMPLATE_PREFERENCES}
 
 pack-user-picture-%: % l_Library_Desktop_Pictures
-	sudo ${INSTALL} -m 644 $< ${WORK_D}/Library/Desktop\ Pictures
+	@sudo ${INSTALL} -m 644 $< ${WORK_D}/Library/Desktop\ Pictures
 
 # posixy file stanzas
 
 pack-etc-%: % l_etc
-	sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/etc
+	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/etc
 
 pack-usr-bin-%: % l_usr_bin
-	sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/bin
+	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/bin
 
 pack-usr-sbin-%: % l_usr_sbin
-	sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/sbin
+	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/sbin
 
 pack-usr-local-bin-%: % l_usr_local_bin
-	sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/bin
+	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/bin
 
 pack-usr-local-sbin-%: % l_usr_local_sbin
-	sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/sbin
+	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/sbin
 
 pack-hookscript-%: % l_etc_hooks
-	sudo ${INSTALL} -m 755 $< ${WORK_D}/etc/hooks
+	@sudo ${INSTALL} -m 755 $< ${WORK_D}/etc/hooks
 
 # Applications and Utilities
 #
@@ -408,17 +408,17 @@ pack-hookscript-%: % l_etc_hooks
 # decided to stash compressed binaries in them in 10.6.
 
 unbz2-applications-%: %.tar.bz2 l_Applications
-	sudo ${TAR} xjf $<.tar.bz2 -C ${WORK_D}/Applications
+	@sudo ${TAR} xjf $< -C ${WORK_D}/Applications
 	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.tar\.bz2//g)
 
 unbz2-utilities-%: %.tar.bz2 l_Applications_Utilities
-	sudo ${TAR} xjf $< -C ${WORK_D}/Applications/Utilities
+	@sudo ${TAR} xjf $< -C ${WORK_D}/Applications/Utilities
 	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.tar\.bz2//g)
 
 ungz-applications-%: %.tar.gz l_Applications
-	sudo ${TAR} xzf $<.tar.gz -C ${WORK_D}/Applications
+	@sudo ${TAR} xzf $< -C ${WORK_D}/Applications
 	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.tar\.gz//g)
 
 ungz-utilities-%: %.tar.gz l_Applications_Utilities
-	sudo ${TAR} xzf $< -C ${WORK_D}/Applications/Utilities
+	@sudo ${TAR} xzf $< -C ${WORK_D}/Applications/Utilities
 	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.tar\.gz//g)
