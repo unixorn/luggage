@@ -327,6 +327,41 @@ l_Library_User_Pictures: l_Library
 	@sudo chown root:admin ${WORK_D}/Library/User\ Pictures
 	@sudo chmod 775 ${WORK_D}/Library/User\ Pictures
 
+l_Library_CorpSupport: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/CorpSupport
+	@sudo chown root:admin ${WORK_D}/Library/CorpSupport
+	@sudo chmod 775 ${WORK_D}/Library/CorpSupport
+
+l_Library_Python: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/Python
+	@sudo chown root:admin ${WORK_D}/Library/Python
+	@sudo chmod 775 ${WORK_D}/Library/Python
+
+l_Library_Python_26: l_Library_Python
+	@sudo mkdir -p ${WORK_D}/Library/Python/2.6
+	@sudo chown root:admin ${WORK_D}/Library/Python/2.6
+	@sudo chmod 775 ${WORK_D}/Library/Python/2.6
+
+l_Library_Python_26_site_packages: l_Library_Python_26
+	@sudo mkdir -p ${WORK_D}/Library/Python/2.6/site-packages
+	@sudo chown root:admin ${WORK_D}/Library/Python/2.6/site-packages
+	@sudo chmod 775 ${WORK_D}/Library/Python/2.6/site-packages
+
+l_Library_Ruby: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/Ruby
+	@sudo chown root:admin ${WORK_D}/Library/Ruby
+	@sudo chmod 775 ${WORK_D}/Library/Ruby
+
+l_Library_Ruby_Site: l_Library_Ruby
+	@sudo mkdir -p ${WORK_D}/Library/Ruby/Site
+	@sudo chown root:admin ${WORK_D}/Library/Ruby/Site
+	@sudo chmod 775 ${WORK_D}/Library/Ruby/Site
+
+l_Library_Ruby_Site_1_8: l_Library_Ruby_Site
+	@sudo mkdir -p ${WORK_D}/Library/Ruby/Site/1.8
+	@sudo chown root:admin ${WORK_D}/Library/Ruby/Site/1.8
+	@sudo chmod 775 ${WORK_D}/Library/Ruby/Site/1.8
+
 l_System: l_root
 	@sudo mkdir -p ${WORK_D}/System
 	@sudo chown -R root:wheel ${WORK_D}/System
@@ -359,6 +394,12 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 	@sudo chmod -R 700 ${USER_TEMPLATE_PREFERENCES}
 
 # file packaging rules
+
+pack-site-python-%: % l_Library_Python_26_site_packages
+	@sudo ${INSTALL} -m 644 -g admin -o root $< ${WORK_D}/Library/Python/2.6/site-packages
+
+pack-siteruby-%: % l_Library_Ruby_Site_1_8
+	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/Ruby/Site/1.8
 
 pack-Library-LaunchAgents-%: % l_Library_LaunchAgents
 	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchAgents
