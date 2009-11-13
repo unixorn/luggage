@@ -285,6 +285,11 @@ l_Library: l_root
 	@sudo chown root:admin ${WORK_D}/Library
 	@sudo chmod 1775 ${WORK_D}/Library
 
+l_Library_ApplicationSupport: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/Application\ Support
+	@sudo chown root:admin ${WORK_D}/Library/Application\ Support
+	@sudo chmod 775 ${WORK_D}/Library/Application\ Support
+
 l_Library_Desktop_Pictures: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Desktop\ Pictures
 	@sudo chown root:admin ${WORK_D}/Library/Desktop\ Pictures
