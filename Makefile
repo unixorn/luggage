@@ -15,11 +15,17 @@
 #
 # Sample package that packages luggage.make and prototype.plist
 
-include /usr/local/share/luggage/luggage.make
+include luggage.make
 
 TITLE=luggage
 REVERSE_DOMAIN=net.apesseekingknowledge
-PAYLOAD=pack-luggage.make
+PAYLOAD=pack-luggage.make pack-prototype.plist
+
+help:
+	@-echo "make bootstrap to copy luggage's files to /usr/local/share/luggage"
+	@-echo
+	@-echo "Once you've made bootstrap, you can 'make pkg' or 'make dmg' to make"
+	@-echo "a package that will install luggage on a machine."
 
 l_usr_local_share_luggage: l_usr_local_share
 	@sudo mkdir -p ${WORK_D}/usr/local/share/luggage
@@ -27,7 +33,15 @@ l_usr_local_share_luggage: l_usr_local_share
 	@sudo chmod 755 ${WORK_D}/usr/local/share/luggage
 
 pack-prototype.plist: l_usr_local_share_luggage
-	@sudo ${INSTALL} -m 644 -o root -g wheel prototype.plist ${WORK_D}/usr/local/share/luggage/luggage.make
+	@sudo ${INSTALL} -m 644 -o root -g wheel prototype.plist ${WORK_D}/usr/local/share/luggage/prototype.plist
 
 pack-luggage.make: l_usr_local_share_luggage
-	 @sudo ${INSTALL} -m 644 -o root -g wheel luggage.make ${WORK_D}/usr/local/share/luggage/luggage.make
+	@sudo ${INSTALL} -m 644 -o root -g wheel luggage.make ${WORK_D}/usr/local/share/luggage/luggage.make
+
+# copy the luggage files into place on the local machine so we can build a pkg.
+bootstrap_files: bootstrap_directory
+	@sudo ${INSTALL} -m 644 -o root -g wheel luggage.make /usr/local/share/luggage/luggage.make
+	@sudo ${INSTALL} -m 644 -o root -g wheel prototype.plist /usr/local/share/luggage/prototype.plist
+
+bootstrap_directory:
+	@sudo mkdir -p /usr/local/share/luggage
