@@ -22,6 +22,7 @@ REVERSE_DOMAIN=net.apesseekingknowledge
 PAYLOAD=pack-luggage.make pack-prototype.plist
 
 help:
+	@-echo
 	@-echo "make bootstrap to copy luggage's files to /usr/local/share/luggage"
 	@-echo
 	@-echo "Once you've made bootstrap, you can 'make pkg' or 'make dmg' to make"
