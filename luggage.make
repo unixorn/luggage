@@ -155,6 +155,7 @@ compile_package: payload .luggage.pkg.plist
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE}"
 	sudo ${PACKAGEMAKER} --root ${WORK_D} \
 		--id ${PACKAGE_ID} \
+		--ds \
 		--target ${PACKAGE_TARGET_OS} \
 		--title ${TITLE} \
 		--info ${SCRATCH_D}/luggage.pkg.plist \
