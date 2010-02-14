@@ -16,7 +16,7 @@
 include /usr/local/share/luggage/luggage.make
 
 TITLE=enable_loginhooks
-REVERSE_DOMAIN=com.ooyala.corp
+REVERSE_DOMAIN=com.example.corp
 PAYLOAD=\
 	unbz2-utilities-iHook.app \
 	pack-hook-background.jpg \
