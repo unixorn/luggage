@@ -23,9 +23,9 @@ PAYLOAD=pack-luggage.make pack-prototype.plist
 
 help:
 	@-echo
-	@-echo "make bootstrap to copy luggage's files to /usr/local/share/luggage"
+	@-echo "make bootstrap_files to copy luggage's files to /usr/local/share/luggage"
 	@-echo
-	@-echo "Once you've made bootstrap, you can 'make pkg' or 'make dmg' to make"
+	@-echo "Once you've made bootstrap_files, you can 'make pkg' or 'make dmg' to make"
 	@-echo "a package that will install luggage on a machine."
 
 l_usr_local_share_luggage: l_usr_local_share
