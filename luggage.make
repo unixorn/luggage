@@ -246,6 +246,16 @@ l_usr_local_share: l_usr_local
 	@sudo chown -R root:wheel ${WORK_D}/usr/local/share
 	@sudo chmod -R 755 ${WORK_D}/usr/local/share
 
+l_usr_man: l_usr_share
+	@sudo mkdir -p ${WORK_D}/usr/share/man
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/man
+	@sudo chmod -R 0755 ${WORK_D}/usr/share/man
+
+l_usr_man_man8: l_usr_man
+	@sudo mkdir -p ${WORK_D}/usr/share/man/man8
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/man/man8
+	@sudo chmod -R 0755 ${WORK_D}/usr/share/man/man8
+
 l_usr_sbin: l_usr
 	@sudo mkdir -p ${WORK_D}/usr/sbin
 	@sudo chown -R root:wheel ${WORK_D}/usr/sbin
@@ -444,6 +454,12 @@ pack-usr-local-bin-%: % l_usr_local_bin
 
 pack-usr-local-sbin-%: % l_usr_local_sbin
 	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/sbin
+
+pack-man-%: l_usr_man
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man
+
+pack-man8-%: l_usr_man_man8
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
 
 pack-hookscript-%: % l_etc_hooks
 	@sudo ${INSTALL} -m 755 $< ${WORK_D}/etc/hooks
