@@ -7,9 +7,9 @@
 	<key>CFBundleShortVersionString</key>
 	<string>{PACKAGE_VERSION}</string>
 	<key>IFMajorVersion</key>
-	<integer>{YY}</integer>
+	<integer>{PACKAGE_MAJOR_VERSION}</integer>
 	<key>IFMinorVersion</key>
-	<integer>{MM}</integer>
+	<integer>{PACKAGE_MINOR_VERSION}</integer>
 	<key>IFPkgFlagAllowBackRev</key>
 	<false/>
 	<key>IFPkgFlagAuthorizationAction</key>

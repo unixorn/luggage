@@ -31,6 +31,8 @@ PACKAGE_ID=${REVERSE_DOMAIN}.${TITLE}
 # Set PACKAGE_VERSION in your Makefile if you don't want version set to
 # today's date
 PACKAGE_VERSION=${STAMP}
+PACKAGE_MAJOR_VERSION=${YY}
+PACKAGE_MINOR_VERSION=${MM}${DD}
 
 # Set PACKAGE_NAME in your Makefile if you don't want it to be TITLE-PACKAGEVERSION.
 PACKAGE_NAME=${TITLE}-${PACKAGE_VERSION}
@@ -173,6 +175,8 @@ ${PACKAGE_PLIST}: /usr/local/share/luggage/prototype.plist
 		sed "s/{DD}/${DD}/g" | \
 		sed "s/{MM}/${MM}/g" | \
 		sed "s/{YY}/${YY}/g" | \
+		sed "s/{PACKAGE_MAJOR_VERSION}/${PACKAGE_MAJOR_VERSION}/g" | \
+		sed "s/{PACKAGE_MINOR_VERSION}/${PACKAGE_MINOR_VERSION}/g" | \
 		sed "s/{PACKAGE_ID}/${PACKAGE_ID}/g" | \
 		sed "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" | \
 		sed "s/{PM_RESTART}/${PM_RESTART}/g" | \
