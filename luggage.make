@@ -53,6 +53,7 @@ LUGGAGE_TMP=/tmp/the_luggage
 SCRATCH_D=${LUGGAGE_TMP}/${PACKAGE_NAME}
 
 SCRIPT_D=${SCRATCH_D}/scripts
+RESOURCE_D=${SCRATCH_D}/resources
 WORK_D=${SCRATCH_D}/root
 PAYLOAD_D=${SCRATCH_D}/payload
 
@@ -109,6 +110,9 @@ package_root:
 scriptdir:
 	@sudo mkdir -p ${SCRIPT_D}
 
+resourcedir:
+	@sudo mkdir -p ${RESOURCE_D}
+
 scratchdir:
 	@sudo mkdir -p ${SCRATCH_D}
 
@@ -146,7 +150,7 @@ pkgls: prep_pkg
 	lsbom -p fmUG ${PAYLOAD_D}/${PACKAGE_FILE}/Contents/Archive.bom
 
 #
-payload: payload_d package_root scratchdir scriptdir
+payload: payload_d package_root scratchdir scriptdir resourcedir
 	make ${PAYLOAD}
 	@-echo
 
@@ -160,6 +164,7 @@ compile_package: payload .luggage.pkg.plist
 		--title ${TITLE} \
 		--info ${SCRATCH_D}/luggage.pkg.plist \
 		--scripts ${SCRIPT_D} \
+		--resources ${RESOURCE_D} \
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
 
@@ -431,6 +436,9 @@ pack-ppd-%: % l_PPDs
 
 pack-script-%: % scriptdir
 	@sudo ${INSTALL} -m 755 $< ${SCRIPT_D}
+
+pack-resource-%: % resourcedir
+	@sudo ${INSTALL} -m 755 $< ${RESOURCE_D}
 
 pack-user-template-plist-%: % l_System_Library_User_Template_Preferences
 	@sudo ${INSTALL} -m 644 $< ${USER_TEMPLATE_PREFERENCES}
