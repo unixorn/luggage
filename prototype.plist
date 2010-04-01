@@ -10,6 +10,8 @@
 	<integer>{YY}</integer>
 	<key>IFMinorVersion</key>
 	<integer>{MM}</integer>
+	<key>IFPkgBuildDate</key>
+	<date>{BUILD_DATE}</date>
 	<key>IFPkgFlagAllowBackRev</key>
 	<false/>
 	<key>IFPkgFlagAuthorizationAction</key>

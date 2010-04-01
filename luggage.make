@@ -17,6 +17,7 @@ STAMP:=`date +%Y%m%d`
 YY:=`date +%Y`
 MM:=`date +%m`
 DD:=`date +%d`
+BUILD_DATE=`date -u "+%Y-%m-%dT%H:%M:%SZ"`
 
 # mai plist haz a flavor
 PLIST_FLAVOR=plist
@@ -202,6 +203,7 @@ ${PACKAGE_PLIST}: /usr/local/share/luggage/prototype.plist
 		sed "s/{DD}/${DD}/g" | \
 		sed "s/{MM}/${MM}/g" | \
 		sed "s/{YY}/${YY}/g" | \
+		sed "s/{BUILD_DATE}/${BUILD_DATE}/g" | \
 		sed "s/{PACKAGE_ID}/${PACKAGE_ID}/g" | \
 		sed "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" | \
 		sed "s/{PM_RESTART}/${PM_RESTART}/g" | \
