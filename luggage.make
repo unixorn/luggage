@@ -71,6 +71,29 @@ PM_EXTRA_ARGS=--verbose --no-recommend
 PM_RESTART=None
 PAYLOAD=
 
+# hdiutil parameters
+#
+# hdiutil will create a compressed disk image with the UDZO and UDBZ formats,
+# or a bland, uncompressed, read-only image with UDRO. Wouldn't you rather
+# trade a little processing time for some disk savings now that you can make
+# packages and images with reckless abandon?
+#
+# The UDZO format is selected as the default here for compatibility, but you
+# can override it to achieve higher compression. If you want to switch away
+# from UDZO, it is probably best to override DMG_FORMAT in your makefile.
+#
+# Format notes:
+# The UDRO format is an uncompressed, read-only disk image that is compatible
+# with Mac OS X 10.0 and later.
+# The UDZO format is gzip-based, defaults to gzip level 1, and is compatible
+# with Mac OS X 10.2 and later.
+# The UDBZ format is bzip2-based and is compatible with Mac OS X 10.4 and later.
+
+DMG_FORMAT_CODE="UDZO"
+ZLIB_LEVEL="9"
+DMG_FORMAT_OPTION="-imagekey zlib-level=${ZLIB_LEVEL}"
+DMG_FORMAT=${DMG_FORMAT_CODE} ${DMG_FORMAT_OPTION}
+
 # Set .PHONY declarations so things don't break if someone has files in
 # their workdir with the same names as our special stanzas
 
@@ -130,6 +153,7 @@ dmg: scratchdir compile_package
 		-srcfolder ${PAYLOAD_D} \
 		-uid 99 -gid 99 \
 		-ov \
+		-format ${DMG_FORMAT} \
 		${DMG_NAME}
 
 modify_packageroot:
