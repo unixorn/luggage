@@ -152,7 +152,7 @@ superclean:
 
 dmg: scratchdir compile_package
 	@echo "Wrapping ${PACKAGE_NAME}..."
-	sudo hdiutil create -volname ${PACKAGE_NAME} \
+	@sudo hdiutil create -volname ${PACKAGE_NAME} \
 		-srcfolder ${PAYLOAD_D} \
 		-uid 99 -gid 99 \
 		-ov \
