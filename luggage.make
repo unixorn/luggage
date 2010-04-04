@@ -17,6 +17,7 @@ STAMP:=`date +%Y%m%d`
 YY:=`date +%Y`
 MM:=`date +%m`
 DD:=`date +%d`
+BUILD_DATE=`date -u "+%Y-%m-%dT%H:%M:%SZ"`
 
 # mai plist haz a flavor
 PLIST_FLAVOR=plist
@@ -55,6 +56,7 @@ LUGGAGE_TMP=/tmp/the_luggage
 SCRATCH_D=${LUGGAGE_TMP}/${PACKAGE_NAME}
 
 SCRIPT_D=${SCRATCH_D}/scripts
+RESOURCE_D=${SCRATCH_D}/resources
 WORK_D=${SCRATCH_D}/root
 PAYLOAD_D=${SCRATCH_D}/payload
 
@@ -71,6 +73,29 @@ PM_EXTRA_ARGS=--verbose --no-recommend
 # Override if you want to require a restart after installing your package.
 PM_RESTART=None
 PAYLOAD=
+
+# hdiutil parameters
+#
+# hdiutil will create a compressed disk image with the UDZO and UDBZ formats,
+# or a bland, uncompressed, read-only image with UDRO. Wouldn't you rather
+# trade a little processing time for some disk savings now that you can make
+# packages and images with reckless abandon?
+#
+# The UDZO format is selected as the default here for compatibility, but you
+# can override it to achieve higher compression. If you want to switch away
+# from UDZO, it is probably best to override DMG_FORMAT in your makefile.
+#
+# Format notes:
+# The UDRO format is an uncompressed, read-only disk image that is compatible
+# with Mac OS X 10.0 and later.
+# The UDZO format is gzip-based, defaults to gzip level 1, and is compatible
+# with Mac OS X 10.2 and later.
+# The UDBZ format is bzip2-based and is compatible with Mac OS X 10.4 and later.
+
+DMG_FORMAT_CODE=UDZO
+ZLIB_LEVEL=9
+DMG_FORMAT_OPTION=-imagekey zlib-level=${ZLIB_LEVEL}
+DMG_FORMAT=${DMG_FORMAT_CODE} ${DMG_FORMAT_OPTION}
 
 # Set .PHONY declarations so things don't break if someone has files in
 # their workdir with the same names as our special stanzas
@@ -111,6 +136,9 @@ package_root:
 scriptdir:
 	@sudo mkdir -p ${SCRIPT_D}
 
+resourcedir:
+	@sudo mkdir -p ${RESOURCE_D}
+
 scratchdir:
 	@sudo mkdir -p ${SCRATCH_D}
 
@@ -124,10 +152,11 @@ superclean:
 
 dmg: scratchdir compile_package
 	@echo "Wrapping ${PACKAGE_NAME}..."
-	@sudo hdiutil create -volname ${PACKAGE_NAME} \
+	sudo hdiutil create -volname ${PACKAGE_NAME} \
 		-srcfolder ${PAYLOAD_D} \
 		-uid 99 -gid 99 \
 		-ov \
+		-format ${DMG_FORMAT} \
 		${DMG_NAME}
 
 modify_packageroot:
@@ -148,7 +177,7 @@ pkgls: prep_pkg
 	lsbom -p fmUG ${PAYLOAD_D}/${PACKAGE_FILE}/Contents/Archive.bom
 
 #
-payload: payload_d package_root scratchdir scriptdir
+payload: payload_d package_root scratchdir scriptdir resourcedir
 	make ${PAYLOAD}
 	@-echo
 
@@ -157,11 +186,12 @@ compile_package: payload .luggage.pkg.plist
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE}"
 	sudo ${PACKAGEMAKER} --root ${WORK_D} \
 		--id ${PACKAGE_ID} \
-		--ds \
+		--filter DS_Store \
 		--target ${PACKAGE_TARGET_OS} \
 		--title ${TITLE} \
 		--info ${SCRATCH_D}/luggage.pkg.plist \
 		--scripts ${SCRIPT_D} \
+		--resources ${RESOURCE_D} \
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
 
@@ -177,6 +207,7 @@ ${PACKAGE_PLIST}: /usr/local/share/luggage/prototype.plist
 		sed "s/{YY}/${YY}/g" | \
 		sed "s/{PACKAGE_MAJOR_VERSION}/${PACKAGE_MAJOR_VERSION}/g" | \
 		sed "s/{PACKAGE_MINOR_VERSION}/${PACKAGE_MINOR_VERSION}/g" | \
+		sed "s/{BUILD_DATE}/${BUILD_DATE}/g" | \
 		sed "s/{PACKAGE_ID}/${PACKAGE_ID}/g" | \
 		sed "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" | \
 		sed "s/{PM_RESTART}/${PM_RESTART}/g" | \
@@ -435,6 +466,9 @@ pack-ppd-%: % l_PPDs
 
 pack-script-%: % scriptdir
 	@sudo ${INSTALL} -m 755 $< ${SCRIPT_D}
+
+pack-resource-%: % resourcedir
+	@sudo ${INSTALL} -m 755 $< ${RESOURCE_D}
 
 pack-user-template-plist-%: % l_System_Library_User_Template_Preferences
 	@sudo ${INSTALL} -m 644 $< ${USER_TEMPLATE_PREFERENCES}

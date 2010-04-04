@@ -10,6 +10,8 @@
 	<integer>{PACKAGE_MAJOR_VERSION}</integer>
 	<key>IFMinorVersion</key>
 	<integer>{PACKAGE_MINOR_VERSION}</integer>
+	<key>IFPkgBuildDate</key>
+	<date>{BUILD_DATE}</date>
 	<key>IFPkgFlagAllowBackRev</key>
 	<false/>
 	<key>IFPkgFlagAuthorizationAction</key>
