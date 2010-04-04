@@ -286,6 +286,41 @@ l_usr_man: l_usr_share
 	@sudo chown -R root:wheel ${WORK_D}/usr/share/man
 	@sudo chmod -R 0755 ${WORK_D}/usr/share/man
 
+l_usr_man_man1: l_usr_man
+	@sudo mkdir -p ${WORK_D}/usr/share/man/man1
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/man/man1
+	@sudo chmod -R 0755 ${WORK_D}/usr/share/man/man1
+
+l_usr_man_man2: l_usr_man
+	@sudo mkdir -p ${WORK_D}/usr/share/man/man2
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/man/man2
+	@sudo chmod -R 0755 ${WORK_D}/usr/share/man/man2
+
+l_usr_man_man3: l_usr_man
+	@sudo mkdir -p ${WORK_D}/usr/share/man/man3
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/man/man3
+	@sudo chmod -R 0755 ${WORK_D}/usr/share/man/man3
+
+l_usr_man_man4: l_usr_man
+	@sudo mkdir -p ${WORK_D}/usr/share/man/man4
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/man/man4
+	@sudo chmod -R 0755 ${WORK_D}/usr/share/man/man4
+
+l_usr_man_man5: l_usr_man
+	@sudo mkdir -p ${WORK_D}/usr/share/man/man5
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/man/man5
+	@sudo chmod -R 0755 ${WORK_D}/usr/share/man/man5
+
+l_usr_man_man6: l_usr_man
+	@sudo mkdir -p ${WORK_D}/usr/share/man/man6
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/man/man6
+	@sudo chmod -R 0755 ${WORK_D}/usr/share/man/man6
+
+l_usr_man_man7: l_usr_man
+	@sudo mkdir -p ${WORK_D}/usr/share/man/man7
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/man/man7
+	@sudo chmod -R 0755 ${WORK_D}/usr/share/man/man7
+
 l_usr_man_man8: l_usr_man
 	@sudo mkdir -p ${WORK_D}/usr/share/man/man8
 	@sudo chown -R root:wheel ${WORK_D}/usr/share/man/man8
@@ -495,6 +530,27 @@ pack-usr-local-sbin-%: % l_usr_local_sbin
 
 pack-man-%: l_usr_man
 	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man
+
+pack-man1-%: l_usr_man_man1
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+
+pack-man2-%: l_usr_man_man2
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+
+pack-man3-%: l_usr_man_man3
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+
+pack-man4-%: l_usr_man_man4
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+
+pack-man5-%: l_usr_man_man5
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+
+pack-man6-%: l_usr_man_man6
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+
+pack-man7-%: l_usr_man_man7
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
 
 pack-man8-%: l_usr_man_man8
 	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
