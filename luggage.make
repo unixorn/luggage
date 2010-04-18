@@ -163,7 +163,6 @@ modify_packageroot:
 prep_pkg:
 	@make clean
 	@make payload
-	@make modify_packageroot
 	@make compile_package
 
 pkg: prep_pkg
@@ -180,6 +179,7 @@ payload: payload_d package_root scratchdir scriptdir resourcedir
 	@-echo
 
 compile_package: payload .luggage.pkg.plist
+	@make modify_packageroot
 	@-sudo rm -fr ${PAYLOAD_D}/${PACKAGE_FILE}
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE}"
 	sudo ${PACKAGEMAKER} --root ${WORK_D} \
