@@ -236,6 +236,11 @@ l_etc_hooks: l_etc
 	@sudo chown -R root:wheel ${WORK_D}/etc/hooks
 	@sudo chmod -R 755 ${WORK_D}/etc/hooks
 
+l_etc_openldap: l_etc
+	@sudo mkdir -p ${WORK_D}/etc/openldap
+	@sudo chmod 755 ${WORK_D}/etc/openldap
+	@sudo chown root:wheel ${WORK_D}/etc/openldap
+
 l_usr: l_root
 	@sudo mkdir -p ${WORK_D}/usr
 	@sudo chown -R root:wheel ${WORK_D}/usr
@@ -391,6 +396,11 @@ l_Library_Preferences: l_Library
 	@sudo chown root:admin ${WORK_D}/Library/Preferences
 	@sudo chmod 775 ${WORK_D}/Library/Preferences
 
+l_Library_Preferences_DirectoryService: l_Library_Preferences
+	@sudo mkdir -p ${WORK_D}/Library/Preferences/DirectoryService
+	@sudo chown root:admin ${WORK_D}/Library/Preferences/DirectoryService
+	@sudo chmod 775 ${WORK_D}/Library/Preferences/DirectoryService
+
 l_Library_Printers: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Printers
 	@sudo chown root:admin ${WORK_D}/Library/Printers
@@ -480,6 +490,9 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 	@sudo chmod -R 700 ${USER_TEMPLATE_PREFERENCES}
 
 # file packaging rules
+
+pack-directory-service-preference-%: % l_Library_Preferences_DirectoryService
+	sudo install -m 600 -o root -g admin $< ${WORK_D}/Library/Preferences/DirectoryService
 
 pack-site-python-%: % l_Library_Python_26_site_packages
 	@sudo ${INSTALL} -m 644 -g admin -o root $< ${WORK_D}/Library/Python/2.6/site-packages
