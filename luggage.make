@@ -381,6 +381,11 @@ l_Library_Desktop_Pictures: l_Library
 	@sudo chown root:admin ${WORK_D}/Library/Desktop\ Pictures
 	@sudo chmod 775 ${WORK_D}/Library/Desktop\ Pictures
 
+l_Library_Fonts: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/Fonts
+	@sudo chown root:admin ${WORK_D}/Library/Fonts
+	@sudo chmod 775 ${WORK_D}/Library/Fonts
+
 l_Library_LaunchAgents: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/LaunchAgents
 	@sudo chown root:wheel ${WORK_D}/Library/LaunchAgents
@@ -499,6 +504,9 @@ pack-site-python-%: % l_Library_Python_26_site_packages
 
 pack-siteruby-%: % l_Library_Ruby_Site_1_8
 	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/Ruby/Site/1.8
+
+pack-Library-Fonts-%: % l_Library_Fonts
+	@sudo ${INSTALL} -m 664 -g admin -o root $< ${WORK_D}/Library/Fonts
 
 pack-Library-LaunchAgents-%: % l_Library_LaunchAgents
 	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchAgents
