@@ -39,6 +39,7 @@ PACKAGE_MINOR_VERSION=${MM}${DD}
 PACKAGE_NAME=${TITLE}-${PACKAGE_VERSION}
 PACKAGE_FILE=${PACKAGE_NAME}.pkg
 DMG_NAME=${PACKAGE_NAME}.dmg
+ZIP_NAME=${PACKAGE_FILE}.zip
 
 # Only use Apple tools for file manipulation, or deal with a world of pain
 # when your resource forks get munched.  This is particularly important on
@@ -46,6 +47,7 @@ DMG_NAME=${PACKAGE_NAME}.dmg
 TAR=/usr/bin/tar
 CP=/bin/cp
 INSTALL=/usr/bin/install
+DITTO=/usr/bin/ditto
 
 PACKAGEMAKER=/Developer/usr/bin/packagemaker
 
@@ -159,6 +161,14 @@ dmg: scratchdir compile_package
 		-format ${DMG_FORMAT} \
 		${DMG_NAME}
 
+zip: scratchdir compile_package
+	@echo "Zipping ${PACKAGE_NAME}..."
+	@${DITTO} -c -k \
+		--noqtn --noacl \
+		--sequesterRsrc \
+		${PAYLOAD_D} \
+		${ZIP_NAME}
+		
 modify_packageroot:
 	@echo "If you need to override permissions or ownerships, override modify_packageroot in your Makefile"
 
