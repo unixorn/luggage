@@ -124,6 +124,7 @@ help:
 	@-echo
 	@-echo "make clean - clean up work files."
 	@-echo "make dmg - roll a pkg, then stuff it into a dmg file."
+	@-echo "make zip - roll a pkg, then stuff it into a zip file."
 	@-echo "make pkg - roll a pkg."
 	@-echo
 
