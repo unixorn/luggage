@@ -136,7 +136,10 @@ payload_d:
 package_root:
 	@sudo mkdir -p ${WORK_D}
 
-scriptdir:
+# packagemaker chokes if the pkg doesn't contain any payload, making script-only
+# packages fail to build mysteriously if you don't remember to include something
+# in it, so we're including the /usr/local directory, since it's harmless.
+scriptdir: l_usr_local
 	@sudo mkdir -p ${SCRIPT_D}
 
 resourcedir:
