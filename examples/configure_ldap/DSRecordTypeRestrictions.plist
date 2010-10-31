@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BSD</key>
+	<dict>
+		<key>/BSD/local</key>
+		<dict>
+			<key>Deny Record Types</key>
+			<array>
+				<string>dsRecTypeStandard:Users</string>
+				<string>dsRecTypeStandard:Groups</string>
+			</array>
+		</dict>
+	</dict>
+	<key>Version</key>
+	<string>1.0</string>
+</dict>
+</plist>
