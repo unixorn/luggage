@@ -390,6 +390,11 @@ l_Library_Application_Support: l_Library
 	@sudo chown root:admin ${WORK_D}/Library/Application\ Support
 	@sudo chmod 775 ${WORK_D}/Library/Application\ Support
 
+l_Library_Application_Support_Adobe: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/Application\ Support/Adobe
+	@sudo chown root:admin ${WORK_D}/Library/Application\ Support/Adobe
+	@sudo chmod 775 ${WORK_D}/Library/Application\ Support/Adobe
+
 l_Library_Desktop_Pictures: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Desktop\ Pictures
 	@sudo chown root:admin ${WORK_D}/Library/Desktop\ Pictures
