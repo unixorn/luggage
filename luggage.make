@@ -136,7 +136,10 @@ payload_d:
 package_root:
 	@sudo mkdir -p ${WORK_D}
 
-scriptdir:
+# packagemaker chokes if the pkg doesn't contain any payload, making script-only
+# packages fail to build mysteriously if you don't remember to include something
+# in it, so we're including the /usr/local directory, since it's harmless.
+scriptdir: l_usr_local
 	@sudo mkdir -p ${SCRIPT_D}
 
 resourcedir:
@@ -386,6 +389,11 @@ l_Library_Application_Support: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Application\ Support
 	@sudo chown root:admin ${WORK_D}/Library/Application\ Support
 	@sudo chmod 775 ${WORK_D}/Library/Application\ Support
+
+l_Library_Application_Support_Adobe: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/Application\ Support/Adobe
+	@sudo chown root:admin ${WORK_D}/Library/Application\ Support/Adobe
+	@sudo chmod 775 ${WORK_D}/Library/Application\ Support/Adobe
 
 l_Library_Desktop_Pictures: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Desktop\ Pictures
