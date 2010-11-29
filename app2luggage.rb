@@ -95,7 +95,8 @@ EOS
   opt :debug, "Set debug level", :default => 0
   opt :directory_name, "Directory to put Makefile, tarball & dmg into", :type => String
   opt :luggage_path, "path to luggage.make", :type => String, :default => "/usr/local/share/luggage/luggage.make"
-  opt :make_dmg, "Create dmg", :default => true
+  opt :make_dmg, "Create dmg after creating subdir", :default => true
+  opt :make_pkg, "Create pkg file after creating subdir", :default => false
   opt :package_id, "Package id (no spaces!)", :type => String
   opt :package_version, "Package version (numeric!)", :type => :int
   opt :reverse_domain, "Your domain in reverse format, eg com.example.corp", :type => String
@@ -141,5 +142,5 @@ Dir.chdir(target_dir)
 
 bundleApplication() if $opts[:create_tarball]
 generateMakefile()
-`sudo make dmg` if $opts[:make_dmg]
-
+%x(sudo make dmg) if $opts[:make_dmg]
+%x(sudo make pkg) if $opts[:make_pkg]
