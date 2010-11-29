@@ -40,7 +40,14 @@ install-app2luggage-#{$app_name}: l_Applications #{$tarball_name}
 	@sudo chown -R root:admin "${WORK_D}/Applications/#{$installed_app}"
 
 END_MAKEFILE
-  return rawMakefile
+  if File.exist?('./Makefile') then
+    puts "there's already a Makefile here. Bailing out."
+    exit 13
+  else
+    File.open("Makefile", "w") do |content|
+      content.write(rawMakefile)
+    end
+  end
 end
 
 def clean_name(name)
