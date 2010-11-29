@@ -31,7 +31,7 @@ def generateMakefile()
 
 include #{$opts[:luggage_path]}
 
-TITLE=#{$opts[:package_id]}
+TITLE=#{$package_id}
 REVERSE_DOMAIN=#{$opts[:reverse_domain]}
 PAYLOAD=install-app2luggage-#{$app_name}
 
@@ -42,7 +42,7 @@ install-app2luggage-#{$app_name}: l_Applications #{$tarball_name}
 END_MAKEFILE
   if File.exist?('./Makefile') then
     puts "there's already a Makefile here. Bailing out."
-    exit 13
+    exit 3
   else
     File.open("Makefile", "w") do |content|
       content.write(rawMakefile)
@@ -91,31 +91,55 @@ where [options] are:
 EOS
 
   opt :application, "Application to package", :type => String
-  opt :create_tarball, "Create tarball for app", :default => false
+  opt :create_tarball, "Create tarball for app", :default => true
   opt :debug, "Set debug level", :default => 0
+  opt :directory_name, "Directory to put Makefile, tarball & dmg into", :type => String
   opt :luggage_path, "path to luggage.make", :type => String, :default => "/usr/local/share/luggage/luggage.make"
+  opt :make_dmg, "Create dmg", :default => true
   opt :package_id, "Package id (no spaces!)", :type => String
   opt :package_version, "Package version (numeric!)", :type => :int
   opt :reverse_domain, "Your domain in reverse format, eg com.example.corp", :type => String
 end
 
 # Sanity check args
-Trollop::die :application, "must specify an application to package" if $opts[:application] == nil
 Trollop::die :application, "#{opts[:application]} must exist" unless File.exist?($opts[:application]) if $opts[:application]
+Trollop::die :application, "must specify an application to package" if $opts[:application] == nil
 Trollop::die :luggage_path, "#{opts[:luggage_path]} doesn't exist" unless File.exist?($opts[:luggage_path]) if $opts[:luggage_path]
 Trollop::die :package_id, "must specify a package id" if $opts[:package_id] == nil
 Trollop::die :reverse_domain, "must specify a reversed domain" if $opts[:reverse_domain] == nil
 
-if $opts[:debug] > 0
-  require 'pp'
-  puts "$opts: #{pp $opts}"
-end
-
 $build_date = `date -u "+%Y-%m-%d"`.chomp
 $app_name = clean_name(File.basename($opts[:application]))
+$package_id = clean_name($opts[:package_id])
 $installed_app = File.basename($opts[:application])
 $tarball_name = "#{$app_name}.#{$build_date}.tar.bz2"
 
+# debuggery.
+if $opts[:debug] > 0
+  require 'pp'
+  puts "$opts: #{pp $opts}"
+  puts "$package_id: #{$package_id}"
+  puts "$build_date: #{$build_date}"
+  puts "$app_name: #{$app_name}"
+  puts "$installed_app: #{$installed_app}"
+  puts "$tarball_name: #{$tarball_name}"
+end
+
+if $opts[:directory_name] != nil then
+  target_dir = $opts[:directory_name]
+else
+  target_dir = $package_id
+end
+
+if File.directory?(target_dir) then
+  puts "#{target_dir} already exists. Exiting so we don't step on your data"
+  exit 5
+end
+
+Dir.mkdir(target_dir)
+Dir.chdir(target_dir)
+
 bundleApplication() if $opts[:create_tarball]
-puts generateMakefile()
+generateMakefile()
+`sudo make dmg` if $opts[:make_dmg]
 
