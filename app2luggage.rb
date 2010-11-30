@@ -19,7 +19,13 @@
 require 'ftools'
 
 require 'rubygems'
-require 'trollop'
+begin
+  require 'trollop'
+rescue LoadError
+  puts "app2luggage.rb requires the trollop gem"
+  puts "do 'sudo gem install trollop' and try again."
+  exit 1
+end
 
 def generateMakefile()
   rawMakefile =<<"END_MAKEFILE"
