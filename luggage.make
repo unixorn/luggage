@@ -255,6 +255,11 @@ l_etc_openldap: l_etc
 	@sudo chmod 755 ${WORK_D}/etc/openldap
 	@sudo chown root:wheel ${WORK_D}/etc/openldap
 
+l_etc_puppet: l_etc
+	@sudo mkdir -p ${WORK_D}/etc/puppet
+	@sudo chown -R root:wheel ${WORK_D}/etc/puppet
+	@sudo chmod -R 755 ${WORK_D}/etc/puppet
+
 l_usr: l_root
 	@sudo mkdir -p ${WORK_D}/usr
 	@sudo chown -R root:wheel ${WORK_D}/usr
