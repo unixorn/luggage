@@ -365,6 +365,16 @@ l_var: l_root
 	@sudo chown -R root:wheel ${WORK_D}/var
 	@sudo chmod -R 755 ${WORK_D}/var
 
+l_var_lib: l_root
+	@sudo mkdir -p ${WORK_D}/var/lib
+	@sudo chown -R root:wheel ${WORK_D}/var/lib
+	@sudo chmod -R 755 ${WORK_D}/var/lib
+
+l_var_lib_puppet: l_root
+	@sudo mkdir -p ${WORK_D}/var/lib/puppet
+	@sudo chown -R root:wheel ${WORK_D}/var/lib/puppet
+	@sudo chmod -R 755 ${WORK_D}/var/lib/puppet
+
 l_var_db: l_var
 	@sudo mkdir -p ${WORK_D}/var/db
 	@sudo chown -R root:wheel ${WORK_D}/var/db
