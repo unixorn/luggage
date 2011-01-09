@@ -42,7 +42,7 @@ REVERSE_DOMAIN=#{$opts[:reverse_domain]}
 PAYLOAD=install-app2luggage-#{$app_name}
 
 install-app2luggage-#{$app_name}: l_Applications #{$tarball_name}
-	@sudo /usr/bin/tar xjf #{$tarball_name} -C ${WORK_D}/Applications
+	@sudo ${TAR} xjf #{$tarball_name} -C ${WORK_D}/Applications
 	@sudo chown -R root:admin "${WORK_D}/Applications/#{$installed_app}"
 
 END_MAKEFILE
