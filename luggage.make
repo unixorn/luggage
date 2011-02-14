@@ -528,6 +528,21 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 	@sudo chown root:wheel ${USER_TEMPLATE_PREFERENCES}
 	@sudo chmod -R 700 ${USER_TEMPLATE_PREFERENCES}
 
+# These user domain locations are for use in rare circumstances, and
+# as a last resort only for repackaging applications that use them.
+# A notice will be issued during the build process.
+l_Users: l_root
+	@sudo mkdir -p ${WORK_D}/Users
+	@sudo chown root:admin ${WORK_D}/Users
+	@sudo chmod 755 ${WORK_D}/Users
+	@echo "Creating \"Users\" directory"
+	
+l_Users_Shared: l_Users
+	@sudo mkdir -p ${WORK_D}/Users/Shared
+	@sudo chown root:wheel ${WORK_D}/Users/Shared
+	@sudo chmod 1777 ${WORK_D}/Users/Shared
+	@echo "Creating \"Users/Shared\" directory"
+
 # file packaging rules
 
 pack-directory-service-preference-%: % l_Library_Preferences_DirectoryService
