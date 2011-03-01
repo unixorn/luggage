@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Author: Joe Block <jpb@ooyala.com>
+#
+# Set machine to use our loginhook and logouthook master scripts
+
+defaults write $3/var/root/Library/Preferences/com.apple.loginwindow LoginHook "/etc/hooks/login.hook"
+defaults write $3/var/root/Library/Preferences/com.apple.loginwindow LogoutHook "/etc/hooks/logout.hook"
+
+chmod 600 $3/var/root/Library/Preferences/com.apple.loginwindow.plist
+chown root:wheel $3/var/root/Library/Preferences/com.apple.loginwindow.plist

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DHCP LDAP</key>
+	<dict>
+		<key>/Sets/92690472-9D05-4EA7-A876-2D7BCD4E19B9</key>
+		<false/>
+	</dict>
+	<key>Search Node Custom Path Array</key>
+	<array>
+		<string>/LDAPv3/ldapslave.example.com</string>
+	</array>
+	<key>Search Node PlugIn Version</key>
+	<string>Search Node PlugIn Version 1.7</string>
+	<key>Search Policy</key>
+	<integer>3</integer>
+</dict>
+</plist>
