@@ -1,0 +1,6 @@
+Full documentation can be found at http://wiki.github.com/unixorn/luggage/
+
+This repo is for example luggage packages. If you're repacking
+something commercial, don't add the commercial part - just the
+Makefile, plus a script (or preferably a stanza in the Makefile)
+to download the commercial part locally before making the package.
