@@ -109,9 +109,9 @@ EOS
 end
 
 # Sanity check args
-Trollop::die :application, "#{opts[:application]} must exist" unless File.exist?($opts[:application]) if $opts[:application]
+Trollop::die :application, "#{$opts[:application]} must exist" unless File.exist?($opts[:application]) if $opts[:application]
 Trollop::die :application, "must specify an application to package" if $opts[:application] == nil
-Trollop::die :luggage_path, "#{opts[:luggage_path]} doesn't exist" unless File.exist?($opts[:luggage_path]) if $opts[:luggage_path]
+Trollop::die :luggage_path, "#{$opts[:luggage_path]} doesn't exist" unless File.exist?($opts[:luggage_path]) if $opts[:luggage_path]
 Trollop::die :package_id, "must specify a package id" if $opts[:package_id] == nil
 Trollop::die :reverse_domain, "must specify a reversed domain" if $opts[:reverse_domain] == nil
 

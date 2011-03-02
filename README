@@ -9,3 +9,5 @@ You can get peer review of a package by examining the diffs between versions
 of your Makefile. No more wading through a zillion annoying GUI panes.
 
 Full documentation can be found at http://wiki.github.com/unixorn/luggage/
+
+Example luggage packages can be found at https://github.com/unixorn/luggage-examples
