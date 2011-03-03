@@ -255,6 +255,11 @@ l_etc_openldap: l_etc
 	@sudo chmod 755 ${WORK_D}/etc/openldap
 	@sudo chown root:wheel ${WORK_D}/etc/openldap
 
+l_etc_puppet: l_etc
+	@sudo mkdir -p ${WORK_D}/etc/puppet
+	@sudo chown -R root:wheel ${WORK_D}/etc/puppet
+	@sudo chmod -R 755 ${WORK_D}/etc/puppet
+
 l_usr: l_root
 	@sudo mkdir -p ${WORK_D}/usr
 	@sudo chown -R root:wheel ${WORK_D}/usr
@@ -359,6 +364,16 @@ l_var: l_root
 	@sudo mkdir -p ${WORK_D}/var
 	@sudo chown -R root:wheel ${WORK_D}/var
 	@sudo chmod -R 755 ${WORK_D}/var
+
+l_var_lib: l_root
+	@sudo mkdir -p ${WORK_D}/var/lib
+	@sudo chown -R root:wheel ${WORK_D}/var/lib
+	@sudo chmod -R 755 ${WORK_D}/var/lib
+
+l_var_lib_puppet: l_root
+	@sudo mkdir -p ${WORK_D}/var/lib/puppet
+	@sudo chown -R root:wheel ${WORK_D}/var/lib/puppet
+	@sudo chmod -R 755 ${WORK_D}/var/lib/puppet
 
 l_var_db: l_var
 	@sudo mkdir -p ${WORK_D}/var/db
@@ -513,6 +528,21 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 	@sudo chown root:wheel ${USER_TEMPLATE_PREFERENCES}
 	@sudo chmod -R 700 ${USER_TEMPLATE_PREFERENCES}
 
+# These user domain locations are for use in rare circumstances, and
+# as a last resort only for repackaging applications that use them.
+# A notice will be issued during the build process.
+l_Users: l_root
+	@sudo mkdir -p ${WORK_D}/Users
+	@sudo chown root:admin ${WORK_D}/Users
+	@sudo chmod 755 ${WORK_D}/Users
+	@echo "Creating \"Users\" directory"
+	
+l_Users_Shared: l_Users
+	@sudo mkdir -p ${WORK_D}/Users/Shared
+	@sudo chown root:wheel ${WORK_D}/Users/Shared
+	@sudo chmod 1777 ${WORK_D}/Users/Shared
+	@echo "Creating \"Users/Shared\" directory"
+
 # file packaging rules
 
 pack-directory-service-preference-%: % l_Library_Preferences_DirectoryService
@@ -572,25 +602,25 @@ pack-man-%: l_usr_man
 	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man
 
 pack-man1-%: l_usr_man_man1
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man1
 
 pack-man2-%: l_usr_man_man2
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man2
 
 pack-man3-%: l_usr_man_man3
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man3
 
 pack-man4-%: l_usr_man_man4
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man4
 
 pack-man5-%: l_usr_man_man5
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man5
 
 pack-man6-%: l_usr_man_man6
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man6
 
 pack-man7-%: l_usr_man_man7
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man7
 
 pack-man8-%: l_usr_man_man8
 	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
