@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Active Directory</key>
+	<string>Inactive</string>
+	<key>AppleTalk</key>
+	<string>Active</string>
+	<key>BSD</key>
+	<string>Active</string>
+	<key>Cache</key>
+	<string>Active</string>
+	<key>Local</key>
+	<string>Active</string>
+	<key>Version</key>
+	<string>1.1</string>
+</dict>
+</plist>

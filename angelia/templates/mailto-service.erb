@@ -1,0 +1,67 @@
+<% 
+    require 'erb'
+    require 'uri'
+
+    # We could use Mail.random_tag for this instead of a static string.
+    boundary = "00112233445566778899AABBCCDD"
+
+    state_time = Time.at(LASTSERVICESTATECHANGE.to_i)
+    # LONGSERVICEOUTPUT has escaped newlines, so fix those.
+    output = [SERVICEOUTPUT, LONGSERVICEOUTPUT.split("\\n")].flatten.join("\n")
+%>
+To: <%= recipient.user %>
+Subject: <%= NOTIFICATIONTYPE %>: <%= SERVICEDESC %> is <%= SERVICESTATE %> on  <%= HOSTALIAS %> (id: <%= LASTSERVICESTATECHANGE %>)
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary=<%= boundary %>
+
+--<%= boundary %>
+Content-Type: text/plain; charset=utf-8
+
+Date/Time: <%= LONGDATETIME %>
+Notification Type: <%= NOTIFICATIONTYPE %>
+Service: <%= SERVICEDESC %>
+Host: <%= HOSTALIAS %> / <%= HOSTADDRESS %>
+State: <%= SERVICESTATE %>
+Attempt: <%= SERVICEATTEMPT %> of <%= MAXSERVICEATTEMPTS %>
+Age in <%= SERVICESTATE %>: <%= Time.now - state_time %> seconds (since <%= state_time %>)
+
+Check output:
+<%= output %>
+
+--<%= boundary %>
+Content-Type: text/html; charset=utf-8
+
+<h3> Nagios Message </h3>
+
+<b>Date/Time: </b> <%= LONGDATETIME %> <br>
+<b>Host: </b> <%= HOSTALIAS %> / <%= HOSTADDRESS %> <br>
+<b>Service Check: </b> <%= SERVICEDESC %> <br>
+<b>Notification Type: </b> <%= NOTIFICATIONTYPE %> <br>
+<b>State: </b> <%= SERVICESTATE %> <br>
+<b>Attempt: </b> <%= SERVICEATTEMPT %> of <%= MAXSERVICEATTEMPTS %> <br>
+<b>Age in <%= SERVICESTATE %>: </b> <%= Time.now - state_time %> seconds (since <%= state_time %>)
+
+<h3> Actions </h3>
+
+<% summary = "Service Alert: " + URI.escape(SERVICEDESC) %> 
+<% description = URI.escape("
+* Date/Time:  #{LONGDATETIME}
+* Notification Type:  #{NOTIFICATIONTYPE}
+* State:  #{SERVICESTATE}
+* Service:  #{SERVICEDESC}
+* Host:  #{HOSTALIAS} / #{HOSTADDRESS}
+
+Check output:
+{noformat}
+#{output}
+{noformat}
+  ")
+  %>
+
+<h3> Check Output </h3>
+
+<pre style="border: 1px solid black; background-color: #E3ECED; padding: 1em; margin: 1em;">
+<%= ERB::Util::h(output) %>
+</pre>
+
+--<%= boundary %>--
