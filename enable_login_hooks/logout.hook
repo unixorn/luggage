@@ -1,9 +1,0 @@
-#!/bin/bash
-#
-# Author: Joe Block <jpb@jpb@apesseekingknowledge.net>
-
-IHOOK=/Applications/Utilities/iHook.app/Contents/MacOS/iHook
-
-if [ -x ${IHOOK} ];then
-    ${IHOOK} --script=/etc/hooks/run_logoutscripts.rb $*
-fi
