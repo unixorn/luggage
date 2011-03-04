@@ -1,8 +1,0 @@
-#!/bin/sh
-#
-# Destroy Kerberos tickets during logout.
-
-PATH=/usr/bin
-
-echo "Destroying Kerberos tickets"
-sudo -u $1 kdestroy -q -a
