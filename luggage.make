@@ -119,6 +119,7 @@ DMG_FORMAT=${DMG_FORMAT_CODE} ${DMG_FORMAT_OPTION}
 USER_TEMPLATE=${WORK_D}/System/Library/User\ Template
 USER_TEMPLATE_PREFERENCES=${USER_TEMPLATE}/English.lproj/Library/Preferences
 USER_TEMPLATE_PICTURES=${USER_TEMPLATE}/English.lproj/Pictures
+USER_TEMPLATE_APPLICATION_SUPPORT=${USER_TEMPLATE}/English.lproj/Library/Application\ Support
 
 # target stanzas
 
@@ -452,6 +453,16 @@ l_Library_LaunchDaemons: l_Library
 	@sudo chown root:wheel ${WORK_D}/Library/LaunchDaemons
 	@sudo chmod 755 ${WORK_D}/Library/LaunchDaemons
 
+l_Library_QuickTime: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/QuickTime
+	@sudo chown root:wheel ${WORK_D}/Library/QuickTime
+	@sudo chmod 755 ${WORK_D}/Library/QuickTime
+
+l_Library_PreferencePanes: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/PreferencePanes
+	@sudo chown root:wheel ${WORK_D}/Library/PreferencePanes
+	@sudo chmod 755 ${WORK_D}/Library/PreferencePanes
+
 l_Library_Preferences: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Preferences
 	@sudo chown root:admin ${WORK_D}/Library/Preferences
@@ -565,6 +576,11 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 	@sudo chown root:wheel ${USER_TEMPLATE_PREFERENCES}
 	@sudo chmod -R 700 ${USER_TEMPLATE_PREFERENCES}
 
+l_System_Library_User_Template_Application_Support: l_System_Library_User_Template_Library
+	@sudo mkdir -p ${USER_TEMPLATE_APPLICATION_SUPPORT}
+	@sudo chown root:wheel ${USER_TEMPLATE_APPLICATION_SUPPORT}
+	@sudo chmod -R 700 ${USER_TEMPLATE_APPLICATION_SUPPORT}
+
 # These user domain locations are for use in rare circumstances, and
 # as a last resort only for repackaging applications that use them.
 # A notice will be issued during the build process.
@@ -601,6 +617,16 @@ pack-Library-LaunchAgents-%: % l_Library_LaunchAgents
 
 pack-Library-LaunchDaemons-%: % l_Library_LaunchDaemons
 	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchDaemons
+
+pack-Library-QuickTime-%: % l_Library_QuickTime
+	@sudo ${CP} -R $< ${WORK_D}/Library/QuickTime
+	@sudo chown -R root:wheel ${WORK_D}/Library/QuickTime/$<
+	@sudo chmod -R 755 ${WORK_D}/Library/QuickTime/$<
+
+pack-Library-PreferencePanes-%: % l_Library_PreferencePanes
+	@sudo ${CP} -R $< ${WORK_D}/Library/PreferencePanes
+	@sudo chown -R root:wheel ${WORK_D}/Library/PreferencePanes/$<
+	@sudo chmod -R 755 ${WORK_D}/Library/PreferencePanes/$<
 
 pack-Library-Preferences-%: % l_Library_Preferences
 	@sudo ${INSTALL} -m 644 -g admin -o root $< ${WORK_D}/Library/Preferences
