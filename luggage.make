@@ -48,6 +48,7 @@ TAR=/usr/bin/tar
 CP=/bin/cp
 INSTALL=/usr/bin/install
 DITTO=/usr/bin/ditto
+UNZIP=/usr/bin/unzip
 
 PACKAGEMAKER=/Developer/usr/bin/packagemaker
 
