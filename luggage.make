@@ -654,3 +654,16 @@ ungz-applications-%: %.tar.gz l_Applications
 ungz-utilities-%: %.tar.gz l_Applications_Utilities
 	@sudo ${TAR} xzf $< -C ${WORK_D}/Applications/Utilities
 	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.tar\.gz//g)
+
+# ${DITTO} preserves resource forks by default
+# --noqtn drops quarantine information
+# -k -x extracts zip
+# Zipped applications commonly found on the Web usually have the suffixes substituted, so these stanzas substitute them back
+
+unzip-applications-%: %.zip l_Applications
+	@sudo ${DITTO} --noqtn -k -x $< ${WORK_D}/Applications/
+	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.zip/.app/g)
+
+unzip-utilities-%: %.zip l_Applications_Utilities
+	@sudo ${DITTO} --noqtn -k -x $< ${WORK_D}/Applications/Utilities/
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.zip/.app/g)
