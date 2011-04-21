@@ -240,25 +240,30 @@ l_root: package_root
 	@sudo chmod 755 ${WORK_D}
 	@sudo chown root:admin ${WORK_D}
 
-l_etc: l_root
-	@sudo mkdir -p ${WORK_D}/etc
-	@sudo chown -R root:wheel ${WORK_D}/etc
-	@sudo chmod -R 755 ${WORK_D}/etc
+l_private: l_root
+	@sudo mkdir -p ${WORK_D}/private
+	@sudo chown -R root:wheel ${WORK_D}/private
+	@sudo chmod -R 755 ${WORK_D}/private
 
-l_etc_hooks: l_etc
-	@sudo mkdir -p ${WORK_D}/etc/hooks
-	@sudo chown -R root:wheel ${WORK_D}/etc/hooks
-	@sudo chmod -R 755 ${WORK_D}/etc/hooks
+l_private_etc: l_private
+	@sudo mkdir -p ${WORK_D}/private/etc
+	@sudo chown -R root:wheel ${WORK_D}/private/etc
+	@sudo chmod -R 755 ${WORK_D}/private/etc
 
-l_etc_openldap: l_etc
-	@sudo mkdir -p ${WORK_D}/etc/openldap
-	@sudo chmod 755 ${WORK_D}/etc/openldap
-	@sudo chown root:wheel ${WORK_D}/etc/openldap
+l_etc_hooks: l_private_etc
+	@sudo mkdir -p ${WORK_D}/private/etc/hooks
+	@sudo chown -R root:wheel ${WORK_D}/private/etc/hooks
+	@sudo chmod -R 755 ${WORK_D}/private/etc/hooks
 
-l_etc_puppet: l_etc
-	@sudo mkdir -p ${WORK_D}/etc/puppet
-	@sudo chown -R root:wheel ${WORK_D}/etc/puppet
-	@sudo chmod -R 755 ${WORK_D}/etc/puppet
+l_etc_openldap: l_private_etc
+	@sudo mkdir -p ${WORK_D}/private/etc/openldap
+	@sudo chmod 755 ${WORK_D}/private/etc/openldap
+	@sudo chown root:wheel ${WORK_D}/private/etc/openldap
+
+l_etc_puppet: l_private_etc
+	@sudo mkdir -p ${WORK_D}/private/etc/puppet
+	@sudo chown -R root:wheel ${WORK_D}/private/etc/puppet
+	@sudo chmod -R 755 ${WORK_D}/private/etc/puppet
 
 l_usr: l_root
 	@sudo mkdir -p ${WORK_D}/usr
@@ -583,8 +588,8 @@ pack-user-picture-%: % l_Library_Desktop_Pictures
 
 # posixy file stanzas
 
-pack-etc-%: % l_etc
-	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/etc
+pack-etc-%: % l_private_etc
+	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/private/etc
 
 pack-usr-bin-%: % l_usr_bin
 	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/bin
@@ -626,7 +631,7 @@ pack-man8-%: l_usr_man_man8
 	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
 
 pack-hookscript-%: % l_etc_hooks
-	@sudo ${INSTALL} -m 755 $< ${WORK_D}/etc/hooks
+	@sudo ${INSTALL} -m 755 $< ${WORK_D}/private/etc/hooks
 
 # Applications and Utilities
 #
