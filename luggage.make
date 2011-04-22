@@ -445,6 +445,11 @@ l_Library_Preferences_DirectoryService: l_Library_Preferences
 	@sudo chown root:admin ${WORK_D}/Library/Preferences/DirectoryService
 	@sudo chmod 775 ${WORK_D}/Library/Preferences/DirectoryService
 
+l_Library_PreferencePanes: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/PreferencePanes
+	@sudo chown root:wheel ${WORK_D}/Library/PreferencePanes
+	@sudo chmod 755 ${WORK_D}/Library/PreferencePanes
+
 l_Library_Printers: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Printers
 	@sudo chown root:admin ${WORK_D}/Library/Printers
@@ -502,6 +507,11 @@ l_Library_Ruby_Site_1_8: l_Library_Ruby_Site
 	@sudo chown root:admin ${WORK_D}/Library/Ruby/Site/1.8
 	@sudo chmod 775 ${WORK_D}/Library/Ruby/Site/1.8
 
+l_Library_StartupItems: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/StartupItems
+	@sudo chown root:wheel ${WORK_D}/Library/StartupItems
+	@sudo chmod 755 ${WORK_D}/Library/StartupItems
+
 l_System: l_root
 	@sudo mkdir -p ${WORK_D}/System
 	@sudo chown -R root:wheel ${WORK_D}/System
@@ -511,6 +521,11 @@ l_System_Library: l_System
 	@sudo mkdir -p ${WORK_D}/System/Library
 	@sudo chown -R root:wheel ${WORK_D}/System/Library
 	@sudo chmod -R 755 ${WORK_D}/System/Library
+
+l_System_Library_Extensions: l_System_Library
+	@sudo mkdir -p ${WORK_D}/System/Library/Extensions
+	@sudo chown -R root:wheel ${WORK_D}/System/Library/Extensions
+	@sudo chmod -R 755 ${WORK_D}/System/Library/Extensions
 
 l_System_Library_User_Template: l_System_Library
 	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj
