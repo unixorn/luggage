@@ -11,3 +11,7 @@ of your Makefile. No more wading through a zillion annoying GUI panes.
 Full documentation can be found at http://wiki.github.com/unixorn/luggage/
 
 Example packages can be found at https://github.com/unixorn/luggage-examples
+
+Note : This version adds a command line option to remove the application prior to installation (app2luggage.rb).
+
+
