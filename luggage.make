@@ -240,25 +240,30 @@ l_root: package_root
 	@sudo chmod 755 ${WORK_D}
 	@sudo chown root:admin ${WORK_D}
 
-l_etc: l_root
-	@sudo mkdir -p ${WORK_D}/etc
-	@sudo chown -R root:wheel ${WORK_D}/etc
-	@sudo chmod -R 755 ${WORK_D}/etc
+l_private: l_root
+	@sudo mkdir -p ${WORK_D}/private
+	@sudo chown -R root:wheel ${WORK_D}/private
+	@sudo chmod -R 755 ${WORK_D}/private
 
-l_etc_hooks: l_etc
-	@sudo mkdir -p ${WORK_D}/etc/hooks
-	@sudo chown -R root:wheel ${WORK_D}/etc/hooks
-	@sudo chmod -R 755 ${WORK_D}/etc/hooks
+l_private_etc: l_private
+	@sudo mkdir -p ${WORK_D}/private/etc
+	@sudo chown -R root:wheel ${WORK_D}/private/etc
+	@sudo chmod -R 755 ${WORK_D}/private/etc
 
-l_etc_openldap: l_etc
-	@sudo mkdir -p ${WORK_D}/etc/openldap
-	@sudo chmod 755 ${WORK_D}/etc/openldap
-	@sudo chown root:wheel ${WORK_D}/etc/openldap
+l_etc_hooks: l_private_etc
+	@sudo mkdir -p ${WORK_D}/private/etc/hooks
+	@sudo chown -R root:wheel ${WORK_D}/private/etc/hooks
+	@sudo chmod -R 755 ${WORK_D}/private/etc/hooks
 
-l_etc_puppet: l_etc
-	@sudo mkdir -p ${WORK_D}/etc/puppet
-	@sudo chown -R root:wheel ${WORK_D}/etc/puppet
-	@sudo chmod -R 755 ${WORK_D}/etc/puppet
+l_etc_openldap: l_private_etc
+	@sudo mkdir -p ${WORK_D}/private/etc/openldap
+	@sudo chmod 755 ${WORK_D}/private/etc/openldap
+	@sudo chown root:wheel ${WORK_D}/private/etc/openldap
+
+l_etc_puppet: l_private_etc
+	@sudo mkdir -p ${WORK_D}/private/etc/puppet
+	@sudo chown -R root:wheel ${WORK_D}/private/etc/puppet
+	@sudo chmod -R 755 ${WORK_D}/private/etc/puppet
 
 l_usr: l_root
 	@sudo mkdir -p ${WORK_D}/usr
@@ -440,6 +445,11 @@ l_Library_Preferences_DirectoryService: l_Library_Preferences
 	@sudo chown root:admin ${WORK_D}/Library/Preferences/DirectoryService
 	@sudo chmod 775 ${WORK_D}/Library/Preferences/DirectoryService
 
+l_Library_PreferencePanes: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/PreferencePanes
+	@sudo chown root:wheel ${WORK_D}/Library/PreferencePanes
+	@sudo chmod 755 ${WORK_D}/Library/PreferencePanes
+
 l_Library_Printers: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Printers
 	@sudo chown root:admin ${WORK_D}/Library/Printers
@@ -497,6 +507,11 @@ l_Library_Ruby_Site_1_8: l_Library_Ruby_Site
 	@sudo chown root:admin ${WORK_D}/Library/Ruby/Site/1.8
 	@sudo chmod 775 ${WORK_D}/Library/Ruby/Site/1.8
 
+l_Library_StartupItems: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/StartupItems
+	@sudo chown root:wheel ${WORK_D}/Library/StartupItems
+	@sudo chmod 755 ${WORK_D}/Library/StartupItems
+
 l_System: l_root
 	@sudo mkdir -p ${WORK_D}/System
 	@sudo chown -R root:wheel ${WORK_D}/System
@@ -506,6 +521,11 @@ l_System_Library: l_System
 	@sudo mkdir -p ${WORK_D}/System/Library
 	@sudo chown -R root:wheel ${WORK_D}/System/Library
 	@sudo chmod -R 755 ${WORK_D}/System/Library
+
+l_System_Library_Extensions: l_System_Library
+	@sudo mkdir -p ${WORK_D}/System/Library/Extensions
+	@sudo chown -R root:wheel ${WORK_D}/System/Library/Extensions
+	@sudo chmod -R 755 ${WORK_D}/System/Library/Extensions
 
 l_System_Library_User_Template: l_System_Library
 	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj
@@ -583,8 +603,8 @@ pack-user-picture-%: % l_Library_Desktop_Pictures
 
 # posixy file stanzas
 
-pack-etc-%: % l_etc
-	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/etc
+pack-etc-%: % l_private_etc
+	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/private/etc
 
 pack-usr-bin-%: % l_usr_bin
 	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/bin
@@ -626,7 +646,7 @@ pack-man8-%: l_usr_man_man8
 	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
 
 pack-hookscript-%: % l_etc_hooks
-	@sudo ${INSTALL} -m 755 $< ${WORK_D}/etc/hooks
+	@sudo ${INSTALL} -m 755 $< ${WORK_D}/private/etc/hooks
 
 # Applications and Utilities
 #
@@ -649,3 +669,16 @@ ungz-applications-%: %.tar.gz l_Applications
 ungz-utilities-%: %.tar.gz l_Applications_Utilities
 	@sudo ${TAR} xzf $< -C ${WORK_D}/Applications/Utilities
 	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.tar\.gz//g)
+
+# ${DITTO} preserves resource forks by default
+# --noqtn drops quarantine information
+# -k -x extracts zip
+# Zipped applications commonly found on the Web usually have the suffixes substituted, so these stanzas substitute them back
+
+unzip-applications-%: %.zip l_Applications
+	@sudo ${DITTO} --noqtn -k -x $< ${WORK_D}/Applications/
+	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.zip/.app/g)
+
+unzip-utilities-%: %.zip l_Applications_Utilities
+	@sudo ${DITTO} --noqtn -k -x $< ${WORK_D}/Applications/Utilities/
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.zip/.app/g)
