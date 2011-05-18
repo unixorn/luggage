@@ -70,7 +70,7 @@ PAYLOAD_D=${SCRATCH_D}/payload
 # --no-recommend. You can disable this by overriding PM_EXTRA_ARGS in your
 # package's Makefile.
 
-PM_EXTRA_ARGS=--verbose --no-recommend
+PM_EXTRA_ARGS=--verbose --no-recommend --no-relocate
 
 # Override if you want to require a restart after installing your package.
 PM_RESTART=None
