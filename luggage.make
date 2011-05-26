@@ -391,14 +391,14 @@ l_var_root: l_var
 	@sudo chmod -R 750 ${WORK_D}/var/root
 
 l_var_root_Library: l_var_root
-        @sudo mkdir -p ${WORK_D}/var/root/Library
-        @sudo chown -R root:wheel ${WORK_D}/var/root/Library
-        @sudo chmod -R 700 ${WORK_D}/var/root/Library
+	@sudo mkdir -p ${WORK_D}/var/root/Library
+	@sudo chown -R root:wheel ${WORK_D}/var/root/Library
+	@sudo chmod -R 700 ${WORK_D}/var/root/Library
 
 l_var_root_Library_Preferences: l_var_root_Library
-        @sudo mkdir -p ${WORK_D}/var/root/Library/Preferences
-        @sudo chown -R root:wheel ${WORK_D}/var/root/Library/Preferences
-        @sudo chmod -R 700 ${WORK_D}/var/root/Library/Preferences
+	@sudo mkdir -p ${WORK_D}/var/root/Library/Preferences
+	@sudo chown -R root:wheel ${WORK_D}/var/root/Library/Preferences
+	@sudo chmod -R 700 ${WORK_D}/var/root/Library/Preferences
 
 l_Applications: l_root
 	@sudo mkdir -p ${WORK_D}/Applications
@@ -629,7 +629,7 @@ pack-usr-local-sbin-%: % l_usr_local_sbin
 	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/sbin
 
 pack-var-root-Library-Preferences-%: % l_var_root_Library_Preferences
-        @sudo ${INSTALL} -m 600 -g wheel -o root $< ${WORK_D}/var/root/Library/Preferences
+	@sudo ${INSTALL} -m 600 -g wheel -o root $< ${WORK_D}/var/root/Library/Preferences
 
 pack-man-%: l_usr_man
 	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man
