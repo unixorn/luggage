@@ -467,11 +467,6 @@ l_Library_QuickTime: l_Library
 	@sudo chown root:wheel ${WORK_D}/Library/QuickTime
 	@sudo chmod 755 ${WORK_D}/Library/QuickTime
 
-l_Library_PreferencePanes: l_Library
-	@sudo mkdir -p ${WORK_D}/Library/PreferencePanes
-	@sudo chown root:wheel ${WORK_D}/Library/PreferencePanes
-	@sudo chmod 755 ${WORK_D}/Library/PreferencePanes
-
 l_Library_Preferences: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Preferences
 	@sudo chown root:admin ${WORK_D}/Library/Preferences
