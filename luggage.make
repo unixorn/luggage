@@ -176,13 +176,9 @@ zip: scratchdir compile_package
 modify_packageroot:
 	@echo "If you need to override permissions or ownerships, override modify_packageroot in your Makefile"
 
-prep_pkg:
-	@make clean
-	@make payload
-	@make compile_package
+prep_pkg: clean compile_package
 
-pkg: prep_pkg
-	@make local_pkg
+pkg: prep_pkg local_pkg
 
 pkgls: prep_pkg
 	@echo
@@ -194,8 +190,7 @@ payload: payload_d package_root scratchdir scriptdir resourcedir
 	make ${PAYLOAD}
 	@-echo
 
-compile_package: payload .luggage.pkg.plist
-	@make modify_packageroot
+compile_package: payload .luggage.pkg.plist modify_packageroot
 	@-sudo rm -fr ${PAYLOAD_D}/${PACKAGE_FILE}
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE}"
 	sudo ${PACKAGEMAKER} --root ${WORK_D} \
