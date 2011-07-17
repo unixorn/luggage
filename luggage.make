@@ -172,7 +172,7 @@ zip: scratchdir compile_package
 		--sequesterRsrc \
 		${PAYLOAD_D} \
 		${ZIP_NAME}
-		
+
 modify_packageroot:
 	@echo "If you need to override permissions or ownerships, override modify_packageroot in your Makefile"
 
@@ -185,7 +185,6 @@ pkgls: prep_pkg
 	@echo
 	lsbom -p fmUG ${PAYLOAD_D}/${PACKAGE_FILE}/Contents/Archive.bom
 
-#
 payload: payload_d package_root scratchdir scriptdir resourcedir
 	make ${PAYLOAD}
 	@-echo
@@ -275,6 +274,11 @@ l_usr_lib: l_usr
 	@sudo chown -R root:wheel ${WORK_D}/usr/lib
 	@sudo chmod -R 755 ${WORK_D}/usr/lib
 
+l_usr_lib_ruby_site_ruby_1_8: l_usr
+	@sudo mkdir -p ${WORK_D}/usr/lib/ruby/site_ruby/1.8
+	@sudo chown -R root:wheel ${WORK_D}/usr/lib/ruby/site_ruby/1.8
+	@sudo chmod -R 755 ${WORK_D}/usr/lib/ruby/site_ruby/1.8
+
 l_usr_local: l_usr
 	@sudo mkdir -p ${WORK_D}/usr/local
 	@sudo chown -R root:wheel ${WORK_D}/usr/local
@@ -359,6 +363,11 @@ l_usr_share: l_usr
 	@sudo mkdir -p ${WORK_D}/usr/share
 	@sudo chown -R root:wheel ${WORK_D}/usr/share
 	@sudo chmod -R 755 ${WORK_D}/usr/share
+
+l_usr_share_doc: l_usr_share
+	@sudo mkdir -p ${WORK_D}/usr/share/doc
+	@sudo chown -R root:wheel ${WORK_D}/usr/share/doc
+	@sudo chmod -R 755 ${WORK_D}/usr/share/doc
 
 l_var: l_root
 	@sudo mkdir -p ${WORK_D}/var
@@ -561,7 +570,7 @@ l_Users: l_root
 	@sudo chown root:admin ${WORK_D}/Users
 	@sudo chmod 755 ${WORK_D}/Users
 	@echo "Creating \"Users\" directory"
-	
+
 l_Users_Shared: l_Users
 	@sudo mkdir -p ${WORK_D}/Users/Shared
 	@sudo chown root:wheel ${WORK_D}/Users/Shared
