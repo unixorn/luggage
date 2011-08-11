@@ -69,8 +69,8 @@ def generatePreflight()
 # Automatically generated preflight script to remove 
 # the application prior to installation of with this
 # package.
-if [ -e "/Applications/#{$installed_app}" ] ; then
-    rm -Rf "/Applications/#{$installed_app}"
+if [ -e "$3/Applications/#{$installed_app}" ] ; then
+    rm -Rf "$3/Applications/#{$installed_app}"
     exit ${?}
 fi
 exit 0
