@@ -578,6 +578,8 @@ l_Users_Shared: l_Users
 	@echo "Creating \"Users/Shared\" directory"
 
 # file packaging rules
+bundle-%: % payload_d
+	sudo ${CP} $< ${PAYLOAD_D}
 
 pack-directory-service-preference-%: % l_Library_Preferences_DirectoryService
 	sudo install -m 600 -o root -g admin $< ${WORK_D}/Library/Preferences/DirectoryService
