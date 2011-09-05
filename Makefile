@@ -22,12 +22,12 @@ REVERSE_DOMAIN=net.apesseekingknowledge
 PAYLOAD=pack-luggage.make pack-prototype.plist \
 	pack-usr-local-bin-app2luggage.rb
 
-help:
+help::
 	@-echo
-	@-echo "make bootstrap_files to copy luggage's files to /usr/local/share/luggage"
+	@-echo "Installation"
 	@-echo
-	@-echo "Once you've made bootstrap_files, you can 'make pkg' or 'make dmg' to make"
-	@-echo "a package that will install luggage on a machine."
+	@-echo "To copy luggage's files to /usr/local/share/luggage: make bootstrap_files"
+	@-echo
 
 l_usr_local_share_luggage: l_usr_local_share
 	@sudo mkdir -p ${WORK_D}/usr/local/share/luggage
