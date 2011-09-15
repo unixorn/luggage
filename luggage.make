@@ -59,6 +59,7 @@ SCRATCH_D=${LUGGAGE_TMP}/${PACKAGE_NAME}
 
 SCRIPT_D=${SCRATCH_D}/scripts
 RESOURCE_D=${SCRATCH_D}/resources
+EN_LPROJ_D=${RESOURCE_D}/en.lproj
 WORK_D=${SCRATCH_D}/root
 PAYLOAD_D=${SCRATCH_D}/payload
 
@@ -147,6 +148,12 @@ scriptdir: l_usr_local
 
 resourcedir:
 	@sudo mkdir -p ${RESOURCE_D}
+
+# add sidecar items, not install payload, into the Resources directory
+# sidecar items may support the installer: welcome file, strings files
+# sidecar items may also be used by scripts but not installed
+enlprojdir: resourcedir
+	@sudo mkdir -p ${EN_LPROJ_D}
 
 scratchdir:
 	@sudo mkdir -p ${SCRATCH_D}
@@ -613,6 +620,10 @@ pack-script-%: % scriptdir
 
 pack-resource-%: % resourcedir
 	@sudo ${INSTALL} -m 755 $< ${RESOURCE_D}
+
+pack-en-resource-%: % enlprojdir
+	@echo "Packing a non-payload item into the installer Resources directory."
+	@sudo ${INSTALL} -m 755 $< ${EN_LPROJ_D}
 
 pack-user-template-plist-%: % l_System_Library_User_Template_Preferences
 	@sudo ${INSTALL} -m 644 $< ${USER_TEMPLATE_PREFERENCES}
