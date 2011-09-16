@@ -14,8 +14,15 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-#   Minor modifications to include the ability to automatically remove the appliaction
-#   prior to installation with an additional flag added by Henri Shustak 2011
+#   Additional modifications contributed by the following people in no particular order : 
+#    -  Henri Shustak
+#
+#   Version History : 
+#       v1.0 - Initial release.
+#       v1.1 - Added an option which provides automatic removal of the appliaction prior to installation.
+#       v1.2 - Minor bug fix relating to working directories which contain spaces.
+#
+#   Minor bug fix relating to directories which conatin spaces added by Henri Shustak 2011
 #
 # If this breaks your system, you get to keep the parts.
 
@@ -126,8 +133,8 @@ def bundleApplication()
   end
   # Use Apple's tar so we don't get bitten by resource forks. We only care
   # because on 10.6 they started stashing compressed binaries there. Yay.
-  `/usr/bin/tar cf #{scratch_tarball} -C #{app_dir} "#{File.basename($opts[:application])}"`
-  `bzip2 -9v #{scratch_tarball}`
+  `/usr/bin/tar cf "#{scratch_tarball}" -C "#{app_dir}" "#{File.basename($opts[:application])}"`
+  `bzip2 -9v "#{scratch_tarball}"`
 end
 
 $opts = Trollop::options do
