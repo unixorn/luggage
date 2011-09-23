@@ -86,7 +86,7 @@ END_PREFLIGHT
 
     else
         rawPreflight =<<"END_PREFLIGHT"
-#/bin/bash
+#!/usr/bin/env bash
 # Automatically generated preflight script which
 # will not do anything but return success.
 exit 0
