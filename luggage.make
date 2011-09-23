@@ -72,6 +72,8 @@ PAYLOAD_D=${SCRATCH_D}/payload
 
 PM_EXTRA_ARGS=--verbose --no-recommend --no-relocate
 
+# Set to false if you want your package to install to volumes other than the boot volume
+ROOT_ONLY=true
 # Override if you want to require a restart after installing your package.
 PM_RESTART=None
 PAYLOAD=
@@ -219,7 +221,8 @@ ${PACKAGE_PLIST}: /usr/local/share/luggage/prototype.plist
 		sed "s/{PACKAGE_ID}/${PACKAGE_ID}/g" | \
 		sed "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" | \
 		sed "s/{PM_RESTART}/${PM_RESTART}/g" | \
-	        sed "s/{PLIST_FLAVOR}/${PLIST_FLAVOR}/g" \
+        sed "s/{PLIST_FLAVOR}/${PLIST_FLAVOR}/g" | \
+           	sed "s/{ROOT_ONLY}/${ROOT_ONLY}/g" \
 		> .luggage.pkg.plist
 	@sudo ${CP} .luggage.pkg.plist ${SCRATCH_D}/luggage.pkg.plist
 	@rm .luggage.pkg.plist ${PACKAGE_PLIST}
