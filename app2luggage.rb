@@ -14,6 +14,16 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
+#   Additional modifications contributed by the following people in no particular order : 
+#    -  Henri Shustak
+#
+#   Version History : 
+#       v1.0 - Initial release.
+#       v1.1 - Added an option which provides automatic removal of the appliaction prior to installation.
+#       v1.2 - Minor bug fix relating to working directories which contain spaces.
+#
+#   Minor bug fix relating to directories which conatin spaces added by Henri Shustak 2011
+#
 # If this breaks your system, you get to keep the parts.
 
 require 'ftools'
@@ -39,7 +49,10 @@ include #{$opts[:luggage_path]}
 
 TITLE=#{$package_id}
 REVERSE_DOMAIN=#{$opts[:reverse_domain]}
-PAYLOAD=install-app2luggage-#{$app_name}
+PAYLOAD=\\
+	pack-script-preflight \\
+	install-app2luggage-#{$app_name}
+
 
 install-app2luggage-#{$app_name}: l_Applications #{$tarball_name}
 	@sudo ${TAR} xjf #{$tarball_name} -C ${WORK_D}/Applications
@@ -55,6 +68,44 @@ END_MAKEFILE
     end
   end
 end
+
+def generatePreflight()
+    if $opts[:remove_exisiting_version] then
+        rawPreflight =<<"END_PREFLIGHT"
+#!/usr/bin/env bash
+# Automatically generated preflight script to remove 
+# the application prior to installation of with this
+# package.
+if [ -e "$3/Applications/#{$installed_app}" ] ; then
+    rm -Rf "$3/Applications/#{$installed_app}"
+    exit ${?}
+fi
+exit 0
+
+END_PREFLIGHT
+
+    else
+        rawPreflight =<<"END_PREFLIGHT"
+#!/usr/bin/env bash
+# Automatically generated preflight script which
+# will not do anything but return success.
+exit 0
+
+END_PREFLIGHT
+
+end
+    
+  if File.exist?('./preflight') then
+    puts "there's already a preflight script here. Bailing out."
+    exit 3
+  else
+    File.open("preflight", "w") do |content|
+      content.write(rawPreflight)
+      `chmod 755 "./preflight"`
+    end
+  end
+end
+
 
 def clean_name(name)
   # get rid of toxic spaces
@@ -82,8 +133,8 @@ def bundleApplication()
   end
   # Use Apple's tar so we don't get bitten by resource forks. We only care
   # because on 10.6 they started stashing compressed binaries there. Yay.
-  `/usr/bin/tar cf #{scratch_tarball} -C #{app_dir} "#{File.basename($opts[:application])}"`
-  `bzip2 -9v #{scratch_tarball}`
+  `/usr/bin/tar cf "#{scratch_tarball}" -C "#{app_dir}" "#{File.basename($opts[:application])}"`
+  `bzip2 -9v "#{scratch_tarball}"`
 end
 
 $opts = Trollop::options do
@@ -105,6 +156,7 @@ EOS
   opt :make_pkg, "Create pkg file after creating subdir", :default => false
   opt :package_id, "Package id (no spaces!)", :type => String
   opt :package_version, "Package version (numeric!)", :type => :int
+  opt :remove_exisiting_version, "Remove the previous version of the application prior to installation", :default => false
   opt :reverse_domain, "Your domain in reverse format, eg com.example.corp", :type => String
 end
 
@@ -147,6 +199,7 @@ Dir.mkdir(target_dir)
 Dir.chdir(target_dir)
 
 bundleApplication() if $opts[:create_tarball]
+generatePreflight()
 generateMakefile()
 %x(sudo make dmg) if $opts[:make_dmg]
 %x(sudo make pkg) if $opts[:make_pkg]
