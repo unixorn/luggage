@@ -31,7 +31,7 @@
 	<key>IFPkgFlagRestartAction</key>
 	<string>{PM_RESTART}</string>
 	<key>IFPkgFlagRootVolumeOnly</key>
-	<{ROOT_ONLY}/>
+	<true/>
 	<key>IFPkgFlagUpdateInstalledLanguages</key>
 	<false/>
 </dict>
