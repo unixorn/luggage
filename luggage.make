@@ -242,6 +242,16 @@ local_pkg:
 
 # Target directory rules
 
+l_Library_Preferences_OpenDirectory_Configurations: l_Library_Preferences
+	@sudo mkdir -p ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
+	@sudo chown root:wheel ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
+	@sudo chmod 755 ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
+	
+l_Library_Preferences_OpenDirectory_Configurations_LDAPv3: l_Library_Preferences_OpenDirectory_Configurations
+	@sudo mkdir -p ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
+	@sudo chown root:wheel ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
+	@sudo chmod 750 ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
+
 l_root: package_root
 	@sudo mkdir -p ${WORK_D}
 	@sudo chmod 755 ${WORK_D}
@@ -593,6 +603,12 @@ l_Users_Shared: l_Users
 # file packaging rules
 bundle-%: % payload_d
 	sudo ${CP} $< ${PAYLOAD_D}
+
+pack-open-directory-configurations-%: % l_Library_Preferences_OpenDirectory_Configurations
+	sudo install -m 600 -o root -g whel $< ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
+
+pack-open-directory-configurations-ldapv3-%: % l_Library_Preferences_OpenDirectory_Configurations_LDAPv3
+	sudo install -m 600 -o root -g wheel $< ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
 
 pack-directory-service-preference-%: % l_Library_Preferences_DirectoryService
 	sudo install -m 600 -o root -g admin $< ${WORK_D}/Library/Preferences/DirectoryService
