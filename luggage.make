@@ -257,6 +257,21 @@ l_private_etc: l_private
 	@sudo chown -R root:wheel ${WORK_D}/private/etc
 	@sudo chmod -R 755 ${WORK_D}/private/etc
 
+l_private_etc_periodic: l_private_etc
+	@sudo mkdir -p ${WORK_D}/private/etc/periodic
+	@sudo chmod 755 ${WORK_D}/private/etc/periodic
+	@sudo chown root:wheel ${WORK_D}/private/etc/periodic
+
+l_private_etc_periodic_login: l_private_etc_periodic
+	@sudo mkdir -p ${WORK_D}/private/etc/periodic/login
+	@sudo chmod 755 ${WORK_D}/private/etc/periodic/login
+	@sudo chown root:wheel ${WORK_D}/private/etc/periodic/login
+
+l_private_etc_periodic_logout: l_private_etc_periodic
+	@sudo mkdir -p ${WORK_D}/private/etc/periodic/logout
+	@sudo chmod 755 ${WORK_D}/private/etc/periodic/logout
+	@sudo chown root:wheel ${WORK_D}/private/etc/periodic/logout
+
 l_etc_hooks: l_private_etc
 	@sudo mkdir -p ${WORK_D}/private/etc/hooks
 	@sudo chown -R root:wheel ${WORK_D}/private/etc/hooks
@@ -638,6 +653,12 @@ pack-user-picture-%: % l_Library_Desktop_Pictures
 
 pack-etc-%: % l_private_etc
 	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/private/etc
+
+pack-private-etc-periodic-login-%: % l_private_etc_periodic_login
+	@sudo ${INSTALL} -m 555 -g wheel -o root $< ${WORK_D}/private/etc/periodic/login
+
+pack-private-etc-periodic-logout-%: % l_private_etc_periodic_logout
+	@sudo ${INSTALL} -m 555 -g wheel -o root $< ${WORK_D}/private/etc/periodic/logout
 
 pack-usr-bin-%: % l_usr_bin
 	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/bin
