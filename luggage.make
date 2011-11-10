@@ -711,6 +711,11 @@ ungz-utilities-%: %.tar.gz l_Applications_Utilities
 # -k -x extracts zip
 # Zipped applications commonly found on the Web usually have the suffixes substituted, so these stanzas substitute them back
 
+pack-application-%: % l_Applications
+	@sudo ${DITTO} --noqtn $< ${WORK_D}/Applications/$<
+	@sudo chown -R root:admin ${WORK_D}/Applications/$<
+	@sudo chmod 755 ${WORK_D}/Applications/$<
+
 unzip-applications-%: %.zip l_Applications
 	@sudo ${DITTO} --noqtn -k -x $< ${WORK_D}/Applications/
 	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.zip/.app/g)
