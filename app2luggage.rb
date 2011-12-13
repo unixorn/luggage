@@ -21,14 +21,15 @@
 #       v1.0 - Initial release.
 #       v1.1 - Added an option which provides automatic removal of the appliaction prior to installation.
 #       v1.2 - Minor bug fix relating to working directories which contain spaces.
+#       v1.3 - Added an option which when enabled will instruct the installer to not install if the application is found on target system.
 #
-#   Minor bug fix relating to directories which conatin spaces added by Henri Shustak 2011
+#   Minor bug fix relating to directories which contain spaces added by Henri Shustak 2011
 #
 # If this breaks your system, you get to keep the parts.
 
 require 'ftools'
-
 require 'rubygems'
+
 begin
   require 'trollop'
 rescue LoadError
@@ -71,6 +72,7 @@ end
 
 def generatePreflight()
     if $opts[:remove_exisiting_version] then
+        
         rawPreflight =<<"END_PREFLIGHT"
 #!/usr/bin/env bash
 # Automatically generated preflight script to remove 
@@ -83,18 +85,30 @@ fi
 exit 0
 
 END_PREFLIGHT
-
     else
-        rawPreflight =<<"END_PREFLIGHT"
+        if $opts[:no_update] then
+            rawPreflight =<<"END_PREFLIGHT"
+#/bin/bash
+# Automatically generated preflight script which
+# will return -1 if the application to install is found within
+# the target drives /Application directory.
+if [ -e "$3/Applications/#{$installed_app}" ] ; then
+    `logger -i -t Installer "Application \"#{$installed_app}\" is already installed on system. This package will not upgrade the currently installed version."`
+    exit -1
+fi
+exit 0
+
+END_PREFLIGHT
+        else
+            rawPreflight =<<"END_PREFLIGHT"
 #/bin/bash
 # Automatically generated preflight script which
 # will not do anything but return success.
 exit 0
 
 END_PREFLIGHT
-
+        end
 end
-    
   if File.exist?('./preflight') then
     puts "there's already a preflight script here. Bailing out."
     exit 3
@@ -157,6 +171,7 @@ EOS
   opt :package_id, "Package id (no spaces!)", :type => String
   opt :package_version, "Package version (numeric!)", :type => :int
   opt :remove_exisiting_version, "Remove the previous version of the application prior to installation", :default => false
+  opt :no_update, "Only install if previous version of the application was not found within target volume \"/Applications/\" directory", :default => false
   opt :reverse_domain, "Your domain in reverse format, eg com.example.corp", :type => String
 end
 
@@ -166,6 +181,7 @@ Trollop::die :application, "must specify an application to package" if $opts[:ap
 Trollop::die :luggage_path, "#{$opts[:luggage_path]} doesn't exist" unless File.exist?($opts[:luggage_path]) if $opts[:luggage_path]
 Trollop::die :package_id, "must specify a package id" if $opts[:package_id] == nil
 Trollop::die :reverse_domain, "must specify a reversed domain" if $opts[:reverse_domain] == nil
+Trollop::die :remove_exisiting_version, "and argument no-update are incompatible with each other" if ($opts[:no_update] == true && $opts[:remove_exisiting_version] == true)
 
 $build_date = `date -u "+%Y-%m-%d"`.chomp
 $app_name = clean_name(File.basename($opts[:application]))
