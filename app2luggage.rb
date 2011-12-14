@@ -86,14 +86,14 @@ exit 0
 
 END_PREFLIGHT
     else
-        if $opts[:no_update] then
+        if $opts[:no_overwrite] then
             rawPreflight =<<"END_PREFLIGHT"
-#/bin/bash
+#!/bin/bash
 # Automatically generated preflight script which
 # will return -1 if the application to install is found within
 # the target drives /Application directory.
 if [ -e "$3/Applications/#{$installed_app}" ] ; then
-    `logger -i -t Installer "Application \"#{$installed_app}\" is already installed on system. This package will not upgrade the currently installed version."`
+    `logger -s -i -t Installer "Application \"#{$installed_app}\" is already installed on system. This package will not overwrite the currently installed version."`
     exit -1
 fi
 exit 0
@@ -101,7 +101,7 @@ exit 0
 END_PREFLIGHT
         else
             rawPreflight =<<"END_PREFLIGHT"
-#/bin/bash
+#!/bin/bash
 # Automatically generated preflight script which
 # will not do anything but return success.
 exit 0
@@ -171,7 +171,7 @@ EOS
   opt :package_id, "Package id (no spaces!)", :type => String
   opt :package_version, "Package version (numeric!)", :type => :int
   opt :remove_exisiting_version, "Remove the previous version of the application prior to installation", :default => false
-  opt :no_update, "Only install if previous version of the application was not found within target volume \"/Applications/\" directory", :default => false
+  opt :no_overwrite, "Only install if previous version of the application was not found within target volume \"/Applications/\" directory", :default => false
   opt :reverse_domain, "Your domain in reverse format, eg com.example.corp", :type => String
 end
 
@@ -181,7 +181,7 @@ Trollop::die :application, "must specify an application to package" if $opts[:ap
 Trollop::die :luggage_path, "#{$opts[:luggage_path]} doesn't exist" unless File.exist?($opts[:luggage_path]) if $opts[:luggage_path]
 Trollop::die :package_id, "must specify a package id" if $opts[:package_id] == nil
 Trollop::die :reverse_domain, "must specify a reversed domain" if $opts[:reverse_domain] == nil
-Trollop::die :remove_exisiting_version, "and argument no-update are incompatible with each other" if ($opts[:no_update] == true && $opts[:remove_exisiting_version] == true)
+Trollop::die :remove_exisiting_version, "and argument no-overwrite are incompatible with each other" if ($opts[:no_overwrite] == true && $opts[:remove_exisiting_version] == true)
 
 $build_date = `date -u "+%Y-%m-%d"`.chomp
 $app_name = clean_name(File.basename($opts[:application]))
