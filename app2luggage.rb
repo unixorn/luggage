@@ -86,6 +86,7 @@ exit 0
 
 END_PREFLIGHT
     else
+        # GUI will just exit with error - as there is some issue with InstallationCheck and VolumeCheck picking up the target volume information
         if $opts[:no_overwrite] then
             rawPreflight =<<"END_PREFLIGHT"
 #!/bin/bash
