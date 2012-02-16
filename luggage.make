@@ -691,20 +691,20 @@ pack-hookscript-%: % l_etc_hooks
 # decided to stash compressed binaries in them in 10.6.
 
 unbz2-applications-%: %.tar.bz2 l_Applications
-	@sudo ${TAR} xjf $< -C ${WORK_D}/Applications
-	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.tar\.bz2//g)
+	@sudo ${TAR} xjf "${<}" -C ${WORK_D}/Applications
+	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo "${<}" | sed s/\.tar\.bz2//g)
 
 unbz2-utilities-%: %.tar.bz2 l_Applications_Utilities
-	@sudo ${TAR} xjf $< -C ${WORK_D}/Applications/Utilities
-	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.tar\.bz2//g)
+	@sudo ${TAR} xjf "${<}" -C ${WORK_D}/Applications/Utilities
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo "${<}" | sed s/\.tar\.bz2//g)
 
 ungz-applications-%: %.tar.gz l_Applications
-	@sudo ${TAR} xzf $< -C ${WORK_D}/Applications
-	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.tar\.gz//g)
+	@sudo ${TAR} xzf "${<}" -C ${WORK_D}/Applications
+	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo "${<}" | sed s/\.tar\.gz//g)
 
 ungz-utilities-%: %.tar.gz l_Applications_Utilities
-	@sudo ${TAR} xzf $< -C ${WORK_D}/Applications/Utilities
-	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.tar\.gz//g)
+	@sudo ${TAR} xzf "${<}" -C ${WORK_D}/Applications/Utilities
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo "${<}" | sed s/\.tar\.gz//g)
 
 # ${DITTO} preserves resource forks by default
 # --noqtn drops quarantine information
@@ -712,14 +712,19 @@ ungz-utilities-%: %.tar.gz l_Applications_Utilities
 # Zipped applications commonly found on the Web usually have the suffixes substituted, so these stanzas substitute them back
 
 pack-application-%: % l_Applications
-	@sudo ${DITTO} --noqtn $< ${WORK_D}/Applications/$<
-	@sudo chown -R root:admin ${WORK_D}/Applications/$<
-	@sudo chmod 755 ${WORK_D}/Applications/$<
+	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/"${<}"
+	@sudo chown -R root:admin ${WORK_D}/Applications/"${<}"
+	@sudo chmod 755 ${WORK_D}/Applications/"${<}"
+
+pack-utilities-%: % l_Applications_Utilities
+	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/Utilities/"${<}"
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/"${<}"
+	@sudo chmod 755 ${WORK_D}/Applications/Utilities/"${<}"
 
 unzip-applications-%: %.zip l_Applications
-	@sudo ${DITTO} --noqtn -k -x $< ${WORK_D}/Applications/
-	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo $< | sed s/\.zip/.app/g)
+	@sudo ${DITTO} --noqtn -k -x "${<}" ${WORK_D}/Applications/
+	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo "${<}" | sed s/\.zip/.app/g)
 
 unzip-utilities-%: %.zip l_Applications_Utilities
-	@sudo ${DITTO} --noqtn -k -x $< ${WORK_D}/Applications/Utilities/
-	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo $< | sed s/\.zip/.app/g)
+	@sudo ${DITTO} --noqtn -k -x "${<}" ${WORK_D}/Applications/Utilities/
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo "${<}" | sed s/\.zip/.app/g)
