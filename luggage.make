@@ -715,6 +715,11 @@ pack-application-%: % l_Applications
 	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/"${<}"
 	@sudo chown -R root:admin ${WORK_D}/Applications/"${<}"
 	@sudo chmod 755 ${WORK_D}/Applications/"${<}"
+	
+pack-applications-%: /Applications/% l_Applications
+	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/"${<}"
+	@sudo chown -R root:admin ${WORK_D}/Applications/"${<}"
+	@sudo chmod 755 ${WORK_D}/Applications/"${<}"
 
 pack-utilities-%: % l_Applications_Utilities
 	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/Utilities/"${<}"
