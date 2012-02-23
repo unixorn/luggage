@@ -215,6 +215,10 @@ compile_package: payload .luggage.pkg.plist modify_packageroot
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
 
+LUGGAGE_LOCAL:=$(dir $(word $(words $(MAKEFILE_LIST)), \
+	$(MAKEFILE_LIST)))/luggage.local
+-include $(LUGGAGE_LOCAL)
+
 ${PACKAGE_PLIST}: /usr/local/share/luggage/prototype.plist
 # override this stanza if you have a different plist you want to use as
 # a custom local template.
