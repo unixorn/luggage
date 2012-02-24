@@ -13,11 +13,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-STAMP:=`date +%Y%m%d`
-YY:=`date +%Y`
-MM:=`date +%m`
-DD:=`date +%d`
-BUILD_DATE=`date -u "+%Y-%m-%dT%H:%M:%SZ"`
+STAMP:=$(shell date +%Y%m%d)
+YY:=$(shell date +%Y)
+MM:=$(shell date +%m)
+DD:=$(shell date +%d)
+BUILD_DATE=$(shell date -u "+%Y-%m-%dT%H:%M:%SZ")
 
 # mai plist haz a flavor
 PLIST_FLAVOR=plist
