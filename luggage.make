@@ -697,26 +697,26 @@ pack-hookscript-%: % l_etc_hooks
 
 unbz2-applications-%: %.tar.bz2 l_Applications
 	@sudo ${TAR} xjf "${<}" -C ${WORK_D}/Applications
-	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo "${<}" | sed s/\.tar\.bz2//g)
+	@sudo chown -R root:admin ${WORK_D}/Applications/"$(shell echo "${<}" | sed s/\.tar\.bz2//g)"
 
 unbz2-utilities-%: %.tar.bz2 l_Applications_Utilities
 	@sudo ${TAR} xjf "${<}" -C ${WORK_D}/Applications/Utilities
-	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo "${<}" | sed s/\.tar\.bz2//g)
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/"$(shell echo "${<}" | sed s/\.tar\.bz2//g)"
 
 ungz-applications-%: %.tar.gz l_Applications
 	@sudo ${TAR} xzf "${<}" -C ${WORK_D}/Applications
-	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo "${<}" | sed s/\.tar\.gz//g)
+	@sudo chown -R root:admin ${WORK_D}/Applications/"$(shell echo "${<}" | sed s/\.tar\.gz//g)"
 
 ungz-utilities-%: %.tar.gz l_Applications_Utilities
 	@sudo ${TAR} xzf "${<}" -C ${WORK_D}/Applications/Utilities
-	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo "${<}" | sed s/\.tar\.gz//g)
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/"$(shell echo "${<}" | sed s/\.tar\.gz//g)"
 
 # ${DITTO} preserves resource forks by default
 # --noqtn drops quarantine information
 # -k -x extracts zip
 # Zipped applications commonly found on the Web usually have the suffixes substituted, so these stanzas substitute them back
 
-pack-application-%: % l_Applications
+pack-applications-%: % l_Applications
 	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/"${<}"
 	@sudo chown -R root:admin ${WORK_D}/Applications/"${<}"
 	@sudo chmod 755 ${WORK_D}/Applications/"${<}"
