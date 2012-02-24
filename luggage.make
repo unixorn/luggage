@@ -25,6 +25,7 @@ PACKAGE_PLIST=.package.plist
 
 PACKAGE_TARGET_OS=10.4
 PLIST_TEMPLATE=prototype.plist
+PLIST_PATH=/usr/local/share/luggage/prototype.plist
 TITLE=CHANGE_ME
 REVERSE_DOMAIN=com.replaceme
 PACKAGE_ID=${REVERSE_DOMAIN}.${TITLE}
@@ -219,10 +220,10 @@ LUGGAGE_LOCAL:=$(dir $(word $(words $(MAKEFILE_LIST)), \
 	$(MAKEFILE_LIST)))/luggage.local
 -include $(LUGGAGE_LOCAL)
 
-${PACKAGE_PLIST}: /usr/local/share/luggage/prototype.plist
+${PACKAGE_PLIST}: ${PLIST_PATH}
 # override this stanza if you have a different plist you want to use as
 # a custom local template.
-	@cat /usr/local/share/luggage/prototype.plist > ${PACKAGE_PLIST}
+	@cat ${PLIST_PATH} > ${PACKAGE_PLIST}
 
 .luggage.pkg.plist: ${PACKAGE_PLIST}
 	@cat ${PACKAGE_PLIST} | \
