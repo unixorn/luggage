@@ -13,11 +13,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-STAMP:=`date +%Y%m%d`
-YY:=`date +%Y`
-MM:=`date +%m`
-DD:=`date +%d`
-BUILD_DATE=`date -u "+%Y-%m-%dT%H:%M:%SZ"`
+STAMP:=$(shell date +%Y%m%d)
+YY:=$(shell date +%Y)
+MM:=$(shell date +%m)
+DD:=$(shell date +%d)
+BUILD_DATE=$(shell date -u "+%Y-%m-%dT%H:%M:%SZ")
 
 # mai plist haz a flavor
 PLIST_FLAVOR=plist
@@ -25,6 +25,7 @@ PACKAGE_PLIST=.package.plist
 
 PACKAGE_TARGET_OS=10.4
 PLIST_TEMPLATE=prototype.plist
+PLIST_PATH=/usr/local/share/luggage/prototype.plist
 TITLE=CHANGE_ME
 REVERSE_DOMAIN=com.replaceme
 PACKAGE_ID=${REVERSE_DOMAIN}.${TITLE}
@@ -215,10 +216,14 @@ compile_package: payload .luggage.pkg.plist modify_packageroot
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
 
-${PACKAGE_PLIST}: /usr/local/share/luggage/prototype.plist
+LUGGAGE_LOCAL:=$(dir $(word $(words $(MAKEFILE_LIST)), \
+	$(MAKEFILE_LIST)))/luggage.local
+-include $(LUGGAGE_LOCAL)
+
+${PACKAGE_PLIST}: ${PLIST_PATH}
 # override this stanza if you have a different plist you want to use as
 # a custom local template.
-	@cat /usr/local/share/luggage/prototype.plist > ${PACKAGE_PLIST}
+	@cat ${PLIST_PATH} > ${PACKAGE_PLIST}
 
 .luggage.pkg.plist: ${PACKAGE_PLIST}
 	@cat ${PACKAGE_PLIST} | \
@@ -692,26 +697,26 @@ pack-hookscript-%: % l_etc_hooks
 
 unbz2-applications-%: %.tar.bz2 l_Applications
 	@sudo ${TAR} xjf "${<}" -C ${WORK_D}/Applications
-	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo "${<}" | sed s/\.tar\.bz2//g)
+	@sudo chown -R root:admin ${WORK_D}/Applications/"$(shell echo "${<}" | sed s/\.tar\.bz2//g)"
 
 unbz2-utilities-%: %.tar.bz2 l_Applications_Utilities
 	@sudo ${TAR} xjf "${<}" -C ${WORK_D}/Applications/Utilities
-	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo "${<}" | sed s/\.tar\.bz2//g)
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/"$(shell echo "${<}" | sed s/\.tar\.bz2//g)"
 
 ungz-applications-%: %.tar.gz l_Applications
 	@sudo ${TAR} xzf "${<}" -C ${WORK_D}/Applications
-	@sudo chown -R root:admin ${WORK_D}/Applications/$(shell echo "${<}" | sed s/\.tar\.gz//g)
+	@sudo chown -R root:admin ${WORK_D}/Applications/"$(shell echo "${<}" | sed s/\.tar\.gz//g)"
 
 ungz-utilities-%: %.tar.gz l_Applications_Utilities
 	@sudo ${TAR} xzf "${<}" -C ${WORK_D}/Applications/Utilities
-	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/$(shell echo "${<}" | sed s/\.tar\.gz//g)
+	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/"$(shell echo "${<}" | sed s/\.tar\.gz//g)"
 
 # ${DITTO} preserves resource forks by default
 # --noqtn drops quarantine information
 # -k -x extracts zip
 # Zipped applications commonly found on the Web usually have the suffixes substituted, so these stanzas substitute them back
 
-pack-application-%: % l_Applications
+pack-applications-%: % l_Applications
 	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/"${<}"
 	@sudo chown -R root:admin ${WORK_D}/Applications/"${<}"
 	@sudo chmod 755 ${WORK_D}/Applications/"${<}"
