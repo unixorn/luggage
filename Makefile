@@ -48,3 +48,4 @@ bootstrap_files: bootstrap_directory
 
 bootstrap_directory:
 	@sudo mkdir -p /usr/local/share/luggage
+	@sudo mkdir -p /usr/local/bin
