@@ -250,7 +250,7 @@ local_pkg:
 l_root: package_root
 	@sudo mkdir -p ${WORK_D}
 	@sudo chmod 755 ${WORK_D}
-	@sudo chown root:admin ${WORK_D}
+	@sudo chown root:wheel ${WORK_D}
 
 l_private: l_root
 	@sudo mkdir -p ${WORK_D}/private
