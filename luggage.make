@@ -73,6 +73,7 @@ PAYLOAD_D=${SCRATCH_D}/payload
 # package's Makefile.
 
 PM_EXTRA_ARGS=--verbose --no-recommend --no-relocate
+PM_FILTER=--filter "/CVS$$" --filter "/\.svn$$" --filter "/\.cvsignore$$" --filter "/\.cvspass$$" --filter "/\.DS_Store$$" --filter "/\.git$$" --filter "/\.gitignore$$"
 
 # Set to false if you want your package to install to volumes other than the boot volume
 ROOT_ONLY=true
@@ -207,7 +208,7 @@ compile_package: payload .luggage.pkg.plist modify_packageroot
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE}"
 	sudo ${PACKAGEMAKER} --root ${WORK_D} \
 		--id ${PACKAGE_ID} \
-		--filter DS_Store \
+		${PM_FILTER} \
 		--target ${PACKAGE_TARGET_OS} \
 		--title ${TITLE} \
 		--info ${SCRATCH_D}/luggage.pkg.plist \
