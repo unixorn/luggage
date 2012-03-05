@@ -73,6 +73,7 @@ PAYLOAD_D=${SCRATCH_D}/payload
 # package's Makefile.
 
 PM_EXTRA_ARGS=--verbose --no-recommend --no-relocate
+M_FILTER=--filter "/CVS$$" --filter "/\.svn$$" --filter "/\.cvsignore$$" --filter "/\.cvspass$$" --filter "/(\._)?\.DS_Store$$" --filter "/\.git$$" --filter "/\.gitignore$$"
 
 # Set to false if you want your package to install to volumes other than the boot volume
 ROOT_ONLY=true
@@ -146,7 +147,11 @@ package_root:
 # packagemaker chokes if the pkg doesn't contain any payload, making script-only
 # packages fail to build mysteriously if you don't remember to include something
 # in it, so we're including the /usr/local directory, since it's harmless.
-scriptdir: l_usr_local
+# this pseudo_payload can easily be overridden in your makefile
+
+pseudo_payload: l_usr_local
+
+scriptdir: pseudo_payload
 	@sudo mkdir -p ${SCRIPT_D}
 
 resourcedir:
@@ -207,7 +212,7 @@ compile_package: payload .luggage.pkg.plist modify_packageroot
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE}"
 	sudo ${PACKAGEMAKER} --root ${WORK_D} \
 		--id ${PACKAGE_ID} \
-		--filter DS_Store \
+		${PM_FILTER} \
 		--target ${PACKAGE_TARGET_OS} \
 		--title ${TITLE} \
 		--info ${SCRATCH_D}/luggage.pkg.plist \
