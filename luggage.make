@@ -73,7 +73,7 @@ PAYLOAD_D=${SCRATCH_D}/payload
 # package's Makefile.
 
 PM_EXTRA_ARGS=--verbose --no-recommend --no-relocate
-PM_FILTER=--filter "/CVS$$" --filter "/\.svn$$" --filter "/\.cvsignore$$" --filter "/\.cvspass$$" --filter "/\.DS_Store$$" --filter "/\.git$$" --filter "/\.gitignore$$"
+M_FILTER=--filter "/CVS$$" --filter "/\.svn$$" --filter "/\.cvsignore$$" --filter "/\.cvspass$$" --filter "/(\._)?\.DS_Store$$" --filter "/\.git$$" --filter "/\.gitignore$$"
 
 # Set to false if you want your package to install to volumes other than the boot volume
 ROOT_ONLY=true
