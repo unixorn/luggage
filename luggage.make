@@ -718,18 +718,26 @@ ungz-utilities-%: %.tar.gz l_Applications_Utilities
 
 # ${DITTO} preserves resource forks by default
 # --noqtn drops quarantine information
-# -k -x extracts zip
-# Zipped applications commonly found on the Web usually have the suffixes substituted, so these stanzas substitute them back
 
+# Allow for packaging software in the same working directory as the Makefile
 pack-applications-%: % l_Applications
 	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/"${<}"
 	@sudo chown -R root:admin ${WORK_D}/Applications/"${<}"
 	@sudo chmod 755 ${WORK_D}/Applications/"${<}"
 
+# Allow for packaging software dirctly from the /Applications directory.	
+pack-from-applications-%: /Applications/% l_Applications
+	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}"${<}"
+	@sudo chown -R root:admin ${WORK_D}"${<}"
+	@sudo chmod 755 ${WORK_D}"${<}"
+
 pack-utilities-%: % l_Applications_Utilities
 	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/Utilities/"${<}"
 	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/"${<}"
 	@sudo chmod 755 ${WORK_D}/Applications/Utilities/"${<}"
+
+# -k -x extracts zip
+# Zipped applications commonly found on the Web usually have the suffixes substituted, so these stanzas substitute them back
 
 unzip-applications-%: %.zip l_Applications
 	@sudo ${DITTO} --noqtn -k -x "${<}" ${WORK_D}/Applications/
