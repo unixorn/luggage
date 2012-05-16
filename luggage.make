@@ -708,6 +708,10 @@ unbz2-utilities-%: %.tar.bz2 l_Applications_Utilities
 	@sudo ${TAR} xjf "${<}" -C ${WORK_D}/Applications/Utilities
 	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/"$(shell echo "${<}" | sed s/\.tar\.bz2//g)"
 
+unbz2-preferencepanes-%: %.tar.bz2 l_Library_PreferencePanes
+	@sudo ${TAR} xjf "${<}" -C ${WORK_D}/Library/PreferencePanes
+	@sudo chown -R root:admin ${WORK_D}/Library/PreferencePanes/"$(shell echo "${<}" | sed s/\.tar\.bz2//g)"
+
 ungz-applications-%: %.tar.gz l_Applications
 	@sudo ${TAR} xzf "${<}" -C ${WORK_D}/Applications
 	@sudo chown -R root:admin ${WORK_D}/Applications/"$(shell echo "${<}" | sed s/\.tar\.gz//g)"
@@ -735,6 +739,16 @@ pack-utilities-%: % l_Applications_Utilities
 	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Applications/Utilities/"${<}"
 	@sudo chown -R root:admin ${WORK_D}/Applications/Utilities/"${<}"
 	@sudo chmod 755 ${WORK_D}/Applications/Utilities/"${<}"
+
+pack-preferencepanes-%: % l_Library_PreferencePanes
+	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Library/PreferencePanes/"${<}"
+	@sudo chown -R root:admin ${WORK_D}/Library/PreferencePanes/"${<}"
+	@sudo chmod 755 ${WORK_D}/Library/PreferencePanes/"${<}"
+
+pack-from-preferencepanes-%: /Library/PreferencePanes/% l_Library_PreferencePanes
+	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}"${<}"
+	@sudo chown -R root:admin ${WORK_D}"${<}"
+	@sudo chmod 755 ${WORK_D}"${<}"
 
 # -k -x extracts zip
 # Zipped applications commonly found on the Web usually have the suffixes substituted, so these stanzas substitute them back
