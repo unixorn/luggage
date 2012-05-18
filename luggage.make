@@ -585,22 +585,22 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 	@sudo chown root:wheel ${USER_TEMPLATE_PREFERENCES}
 	@sudo chmod -R 700 ${USER_TEMPLATE_PREFERENCES}
 
-l_System_Library_User_Template_Library_Application_Support : l_System_Library_User_Template_Library
+l_System_Library_User_Template_Library_Application_Support: l_System_Library_User_Template_Library
 	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support
 	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support
 	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support
 
-l_System_Library_User_Template_Library_Application_Support_Firefox : l_System_Library_User_Template_Library_Application_Support
+l_System_Library_User_Template_Library_Application_Support_Firefox: l_System_Library_User_Template_Library_Application_Support
 	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox
 	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox
 	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox
 
-l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles : l_System_Library_User_Template_Library_Application_Support_Firefox
+l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles: l_System_Library_User_Template_Library_Application_Support_Firefox
 	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles
 	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles
 	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles
 
-l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles_Default : l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles
+l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles_Default: l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles
 	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
 	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
 	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
