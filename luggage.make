@@ -242,16 +242,6 @@ local_pkg:
 
 # Target directory rules
 
-l_Library_Preferences_OpenDirectory_Configurations: l_Library_Preferences
-	@sudo mkdir -p ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
-	@sudo chown root:wheel ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
-	@sudo chmod 755 ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
-	
-l_Library_Preferences_OpenDirectory_Configurations_LDAPv3: l_Library_Preferences_OpenDirectory_Configurations
-	@sudo mkdir -p ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
-	@sudo chown root:wheel ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
-	@sudo chmod 750 ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
-
 l_root: package_root
 	@sudo mkdir -p ${WORK_D}
 	@sudo chmod 755 ${WORK_D}
@@ -477,6 +467,21 @@ l_Library_Preferences: l_Library
 	@sudo chown root:admin ${WORK_D}/Library/Preferences
 	@sudo chmod 775 ${WORK_D}/Library/Preferences
 
+l_Library_Preferences_OpenDirectory: l_Library_Preferences
+	@sudo mkdir -p ${WORK_D}/Library/Preferences/OpenDirectory
+	@sudo chown root:wheel ${WORK_D}/Library/Preferences/OpenDirectory
+	@sudo chmod 755 ${WORK_D}/Library/Preferences/OpenDirectory
+
+l_Library_Preferences_OpenDirectory_Configurations: l_Library_Preferences_OpenDirectory
+	@sudo mkdir -p ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
+	@sudo chown root:wheel ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
+	@sudo chmod 755 ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
+	
+l_Library_Preferences_OpenDirectory_Configurations_LDAPv3: l_Library_Preferences_OpenDirectory_Configurations
+	@sudo mkdir -p ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
+	@sudo chown root:wheel ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
+	@sudo chmod 750 ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
+
 l_Library_Preferences_DirectoryService: l_Library_Preferences
 	@sudo mkdir -p ${WORK_D}/Library/Preferences/DirectoryService
 	@sudo chown root:admin ${WORK_D}/Library/Preferences/DirectoryService
@@ -603,6 +608,9 @@ l_Users_Shared: l_Users
 # file packaging rules
 bundle-%: % payload_d
 	sudo ${CP} $< ${PAYLOAD_D}
+
+pack-open-directory-%: % l_Library_Preferences_OpenDirectory
+	sudo install -m 600 -o root -g whel $< ${WORK_D}/Library/Preferences/OpenDirectory
 
 pack-open-directory-configurations-%: % l_Library_Preferences_OpenDirectory_Configurations
 	sudo install -m 600 -o root -g whel $< ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
