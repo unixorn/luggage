@@ -267,6 +267,12 @@ l_private_etc: l_private
 	@sudo chown -R root:wheel ${WORK_D}/private/etc
 	@sudo chmod -R 755 ${WORK_D}/private/etc
 
+l_private_etc_hooks: l_etc_hooks
+
+l_private_etc_openldap: l_etc_openldap
+
+l_private_etc_puppet: l_etc_puppet
+
 l_private_var: l_var
 
 l_private_var_lib: l_var_lib
@@ -728,7 +734,7 @@ pack-man7-%: l_usr_man_man7
 pack-man8-%: l_usr_man_man8
 	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
 
-pack-hookscript-%: % l_etc_hooks
+pack-hookscript-%: % l_private_etc_hooks
 	@sudo ${INSTALL} -m 755 $< ${WORK_D}/private/etc/hooks
 
 # Applications and Utilities
