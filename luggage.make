@@ -267,6 +267,20 @@ l_private_etc: l_private
 	@sudo chown -R root:wheel ${WORK_D}/private/etc
 	@sudo chmod -R 755 ${WORK_D}/private/etc
 
+l_private_var: l_var
+
+l_private_var_lib: l_var_lib
+
+l_private_var_lib_puppet: l_var_lib_puppet
+
+l_private_var_db: l_var_db
+
+l_private_var_root: l_var_root
+
+l_private_var_root_Library: l_var_root_Library
+
+l_private_var_root_Library_Preferences: l_var_root_Library_Preferences
+
 l_etc_hooks: l_private_etc
 	@sudo mkdir -p ${WORK_D}/private/etc/hooks
 	@sudo chown -R root:wheel ${WORK_D}/private/etc/hooks
@@ -392,40 +406,40 @@ l_usr_share_doc: l_usr_share
 	@sudo chown -R root:wheel ${WORK_D}/usr/share/doc
 	@sudo chmod -R 755 ${WORK_D}/usr/share/doc
 
-l_var: l_root
-	@sudo mkdir -p ${WORK_D}/var
-	@sudo chown -R root:wheel ${WORK_D}/var
-	@sudo chmod -R 755 ${WORK_D}/var
+l_var: l_private
+	@sudo mkdir -p ${WORK_D}/private/var
+	@sudo chown -R root:wheel ${WORK_D}/private/var
+	@sudo chmod -R 755 ${WORK_D}/private/var
 
 l_var_lib: l_root
-	@sudo mkdir -p ${WORK_D}/var/lib
-	@sudo chown -R root:wheel ${WORK_D}/var/lib
-	@sudo chmod -R 755 ${WORK_D}/var/lib
+	@sudo mkdir -p ${WORK_D}/private/var/lib
+	@sudo chown -R root:wheel ${WORK_D}/private/var/lib
+	@sudo chmod -R 755 ${WORK_D}/private/var/lib
 
 l_var_lib_puppet: l_root
-	@sudo mkdir -p ${WORK_D}/var/lib/puppet
-	@sudo chown -R root:wheel ${WORK_D}/var/lib/puppet
-	@sudo chmod -R 755 ${WORK_D}/var/lib/puppet
+	@sudo mkdir -p ${WORK_D}/private/var/lib/puppet
+	@sudo chown -R root:wheel ${WORK_D}/private/var/lib/puppet
+	@sudo chmod -R 755 ${WORK_D}/private/var/lib/puppet
 
 l_var_db: l_var
-	@sudo mkdir -p ${WORK_D}/var/db
-	@sudo chown -R root:wheel ${WORK_D}/var/db
-	@sudo chmod -R 755 ${WORK_D}/var/db
+	@sudo mkdir -p ${WORK_D}/private/var/db
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db
+	@sudo chmod -R 755 ${WORK_D}/private/var/db
 
 l_var_root: l_var
-	@sudo mkdir -p ${WORK_D}/var/root
-	@sudo chown -R root:wheel ${WORK_D}/var/root
-	@sudo chmod -R 750 ${WORK_D}/var/root
+	@sudo mkdir -p ${WORK_D}/private/var/root
+	@sudo chown -R root:wheel ${WORK_D}/private/var/root
+	@sudo chmod -R 750 ${WORK_D}/private/var/root
 
 l_var_root_Library: l_var_root
-	@sudo mkdir -p ${WORK_D}/var/root/Library
-	@sudo chown -R root:wheel ${WORK_D}/var/root/Library
-	@sudo chmod -R 700 ${WORK_D}/var/root/Library
+	@sudo mkdir -p ${WORK_D}/private/var/root/Library
+	@sudo chown -R root:wheel ${WORK_D}/private/var/root/Library
+	@sudo chmod -R 700 ${WORK_D}/private/var/root/Library
 
 l_var_root_Library_Preferences: l_var_root_Library
-	@sudo mkdir -p ${WORK_D}/var/root/Library/Preferences
-	@sudo chown -R root:wheel ${WORK_D}/var/root/Library/Preferences
-	@sudo chmod -R 700 ${WORK_D}/var/root/Library/Preferences
+	@sudo mkdir -p ${WORK_D}/private/var/root/Library/Preferences
+	@sudo chown -R root:wheel ${WORK_D}/private/var/root/Library/Preferences
+	@sudo chmod -R 700 ${WORK_D}/private/var/root/Library/Preferences
 
 l_Applications: l_root
 	@sudo mkdir -p ${WORK_D}/Applications
@@ -585,6 +599,26 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 	@sudo chown root:wheel ${USER_TEMPLATE_PREFERENCES}
 	@sudo chmod -R 700 ${USER_TEMPLATE_PREFERENCES}
 
+l_System_Library_User_Template_Library_Application_Support: l_System_Library_User_Template_Library
+	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support
+	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support
+	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support
+
+l_System_Library_User_Template_Library_Application_Support_Firefox: l_System_Library_User_Template_Library_Application_Support
+	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox
+	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox
+	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox
+
+l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles: l_System_Library_User_Template_Library_Application_Support_Firefox
+	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles
+	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles
+	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles
+
+l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles_Default: l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles
+	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+
 # These user domain locations are for use in rare circumstances, and
 # as a last resort only for repackaging applications that use them.
 # A notice will be issued during the build process.
@@ -644,6 +678,9 @@ pack-user-template-plist-%: % l_System_Library_User_Template_Preferences
 pack-user-picture-%: % l_Library_Desktop_Pictures
 	@sudo ${INSTALL} -m 644 $< ${WORK_D}/Library/Desktop\ Pictures
 
+pack-User-Template-Library-Application-Support-Firefox-Profiles-Default-%: % l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles_Default
+	@sudo ${INSTALL} -m 644 $< ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+
 # posixy file stanzas
 
 pack-etc-%: % l_private_etc
@@ -661,8 +698,8 @@ pack-usr-local-bin-%: % l_usr_local_bin
 pack-usr-local-sbin-%: % l_usr_local_sbin
 	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/sbin
 
-pack-var-root-Library-Preferences-%: % l_var_root_Library_Preferences
-	@sudo ${INSTALL} -m 600 -g wheel -o root $< ${WORK_D}/var/root/Library/Preferences
+pack-var-root-Library-Preferences-%: % l_private_var_root_Library_Preferences
+	@sudo ${INSTALL} -m 600 -g wheel -o root $< ${WORK_D}/private/var/root/Library/Preferences
 
 pack-man-%: l_usr_man
 	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man
