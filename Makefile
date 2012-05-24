@@ -45,6 +45,10 @@ bootstrap_files: bootstrap_directory
 	@sudo ${INSTALL} -m 644 -o root -g wheel luggage.make /usr/local/share/luggage/luggage.make
 	@sudo ${INSTALL} -m 644 -o root -g wheel prototype.plist /usr/local/share/luggage/prototype.plist
 	@sudo ${INSTALL} -m 755 -o root -g wheel app2luggage.rb /usr/local/bin/app2luggage.rb
+	@if [ ! -x "/usr/local/bin/packagemaker" ]; then \
+		packagemaker=`find /Applications -name PackageMaker`; \
+		sudo ln -s $$packagemaker /usr/local/bin/packagemaker; \
+	fi
 
 bootstrap_directory:
 	@sudo mkdir -p /usr/local/share/luggage
