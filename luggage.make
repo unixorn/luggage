@@ -642,100 +642,100 @@ l_Users_Shared: l_Users
 
 # file packaging rules
 bundle-%: % payload_d
-	sudo ${CP} $< ${PAYLOAD_D}
+	sudo ${CP} "${<}" ${PAYLOAD_D}
 
 pack-directory-service-preference-%: % l_Library_Preferences_DirectoryService
-	sudo install -m 600 -o root -g admin $< ${WORK_D}/Library/Preferences/DirectoryService
+	sudo install -m 600 -o root -g admin "${<}" ${WORK_D}/Library/Preferences/DirectoryService
 
 pack-site-python-%: % l_Library_Python_26_site_packages
-	@sudo ${INSTALL} -m 644 -g admin -o root $< ${WORK_D}/Library/Python/2.6/site-packages
+	@sudo ${INSTALL} -m 644 -g admin -o root "${<}" ${WORK_D}/Library/Python/2.6/site-packages
 
 pack-siteruby-%: % l_Library_Ruby_Site_1_8
-	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/Ruby/Site/1.8
+	@sudo ${INSTALL} -m 644 -g wheel -o root "${<}" ${WORK_D}/Library/Ruby/Site/1.8
 
 pack-Library-Fonts-%: % l_Library_Fonts
-	@sudo ${INSTALL} -m 664 -g admin -o root $< ${WORK_D}/Library/Fonts
+	@sudo ${INSTALL} -m 664 -g admin -o root "${<}" ${WORK_D}/Library/Fonts
 
 pack-Library-LaunchAgents-%: % l_Library_LaunchAgents
-	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchAgents
+	@sudo ${INSTALL} -m 644 -g wheel -o root "${<}" ${WORK_D}/Library/LaunchAgents
 
 pack-Library-LaunchDaemons-%: % l_Library_LaunchDaemons
-	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/Library/LaunchDaemons
+	@sudo ${INSTALL} -m 644 -g wheel -o root "${<}" ${WORK_D}/Library/LaunchDaemons
 
 pack-Library-Preferences-%: % l_Library_Preferences
-	@sudo ${INSTALL} -m 644 -g admin -o root $< ${WORK_D}/Library/Preferences
+	@sudo ${INSTALL} -m 644 -g admin -o root "${<}" ${WORK_D}/Library/Preferences
 
 pack-ppd-%: % l_PPDs
-	@sudo ${INSTALL} -m 664 -g admin -o root $< ${WORK_D}/Library/Printers/PPDs/Contents/Resources
+	@sudo ${INSTALL} -m 664 -g admin -o root "${<}" ${WORK_D}/Library/Printers/PPDs/Contents/Resources
 
 pack-script-%: % scriptdir
-	@sudo ${INSTALL} -m 755 $< ${SCRIPT_D}
+	@sudo ${INSTALL} -m 755 "${<}" ${SCRIPT_D}
 
 pack-resource-%: % resourcedir
-	@sudo ${INSTALL} -m 755 $< ${RESOURCE_D}
+	@sudo ${INSTALL} -m 755 "${<}" ${RESOURCE_D}
 
 pack-en-resource-%: % enlprojdir
 	@echo "Packing a non-payload item into the installer Resources directory."
-	@sudo ${INSTALL} -m 755 $< ${EN_LPROJ_D}
+	@sudo ${INSTALL} -m 755 "${<}" ${EN_LPROJ_D}
 
 pack-user-template-plist-%: % l_System_Library_User_Template_Preferences
-	@sudo ${INSTALL} -m 644 $< ${USER_TEMPLATE_PREFERENCES}
+	@sudo ${INSTALL} -m 644 "${<}" ${USER_TEMPLATE_PREFERENCES}
 
 pack-user-picture-%: % l_Library_Desktop_Pictures
-	@sudo ${INSTALL} -m 644 $< ${WORK_D}/Library/Desktop\ Pictures
+	@sudo ${INSTALL} -m 644 "${<}" ${WORK_D}/Library/Desktop\ Pictures
 
 pack-User-Template-Library-Application-Support-Firefox-Profiles-Default-%: % l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles_Default
-	@sudo ${INSTALL} -m 644 $< ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+	@sudo ${INSTALL} -m 644 "${<}" ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
 
 # posixy file stanzas
 
 pack-etc-%: % l_private_etc
-	@sudo ${INSTALL} -m 644 -g wheel -o root $< ${WORK_D}/private/etc
+	@sudo ${INSTALL} -m 644 -g wheel -o root "${<}" ${WORK_D}/private/etc
 
 pack-usr-bin-%: % l_usr_bin
-	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/bin
+	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/usr/bin
 
 pack-usr-sbin-%: % l_usr_sbin
-	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/sbin
+	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/usr/sbin
 
 pack-usr-local-bin-%: % l_usr_local_bin
-	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/bin
+	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/usr/local/bin
 
 pack-usr-local-sbin-%: % l_usr_local_sbin
-	@sudo ${INSTALL} -m 755 -g wheel -o root $< ${WORK_D}/usr/local/sbin
+	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/usr/local/sbin
 
 pack-var-root-Library-Preferences-%: % l_private_var_root_Library_Preferences
-	@sudo ${INSTALL} -m 600 -g wheel -o root $< ${WORK_D}/private/var/root/Library/Preferences
+	@sudo ${INSTALL} -m 600 -g wheel -o root "${<}" ${WORK_D}/private/var/root/Library/Preferences
 
 pack-man-%: l_usr_man
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man
+	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man
 
 pack-man1-%: l_usr_man_man1
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man1
+	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man1
 
 pack-man2-%: l_usr_man_man2
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man2
+	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man2
 
 pack-man3-%: l_usr_man_man3
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man3
+	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man3
 
 pack-man4-%: l_usr_man_man4
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man4
+	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man4
 
 pack-man5-%: l_usr_man_man5
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man5
+	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man5
 
 pack-man6-%: l_usr_man_man6
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man6
+	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man6
 
 pack-man7-%: l_usr_man_man7
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man7
+	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man7
 
 pack-man8-%: l_usr_man_man8
-	@sudo ${INSTALL} -m 0644 -g wheel -o root $< ${WORK_D}/usr/share/man/man8
+	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man8
 
 pack-hookscript-%: % l_private_etc_hooks
-	@sudo ${INSTALL} -m 755 $< ${WORK_D}/private/etc/hooks
+	@sudo ${INSTALL} -m 755 "${<}" ${WORK_D}/private/etc/hooks
 
 # Applications and Utilities
 #
