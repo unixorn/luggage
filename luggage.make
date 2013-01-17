@@ -169,13 +169,17 @@ payload_d:
 package_root:
 	@sudo mkdir -p ${WORK_D}
 
-scriptdir_pb:
-	@sudo mkdir -p ${SCRIPT_D}
-
 # packagemaker chokes if the pkg doesn't contain any payload, making script-only
 # packages fail to build mysteriously if you don't remember to include something
 # in it, so we're including the /usr/local directory, since it's harmless.
-scriptdir_pm: l_usr_local
+# this psuedo_payload can be easily overriden in your Makefile
+
+pseudo_payload: l_usr_local
+
+scriptdir_pm: pseudo_payload
+	@sudo mkdir -p ${SCRIPT_D}
+
+scriptdir_pb: pseudo_payload
 	@sudo mkdir -p ${SCRIPT_D}
 
 ifeq (${USE_PKGBUILD}, 1)
@@ -245,7 +249,7 @@ compile_package_pm: payload .luggage.pkg.plist modify_packageroot
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE} with ${PACKAGEMAKER}"
 	sudo ${PACKAGEMAKER} --root ${WORK_D} \
 		--id ${PACKAGE_ID} \
-		--filter DS_Store \
+		${PM_FILTER} \
 		--target ${PACKAGE_TARGET_OS} \
 		--title ${TITLE} \
 		--info ${SCRATCH_D}/luggage.pkg.plist \
@@ -259,6 +263,7 @@ compile_package_pb: payload modify_packageroot
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE} with ${PKGBUILD}."
 	sudo ${PKGBUILD} --root ${WORK_D} \
 		--identifier ${PACKAGE_ID} \
+		${PM_FILTER} \
 		--scripts ${SCRIPT_D} \
 		--version ${PACKAGE_VERSION} \
 		${PB_EXTRA_ARGS} \
@@ -722,7 +727,7 @@ pack-script-pb-%: % scriptdir
 	@echo "Also check your pack-script-* stanzas in PAYLOAD"
 	@echo ""
 	@echo "******************************************************************"
-	@sudo ${INSTALL} -o root -g wheel -m 755 $< ${SCRIPT_D}
+	@sudo ${INSTALL} -o root -g wheel -m 755 "${<}" ${SCRIPT_D}
 
 pack-script-pm-%: % scriptdir
 	@echo "******************************************************************"
@@ -733,7 +738,7 @@ pack-script-pm-%: % scriptdir
 	@echo "Also check your pack-script-* stanzas in PAYLOAD"
 	@echo ""
 	@echo "******************************************************************"
-	@sudo ${INSTALL} -o root -g wheel -m 755 $< ${SCRIPT_D}
+	@sudo ${INSTALL} -o root -g wheel -m 755 "${<}" ${SCRIPT_D}
 
 ifeq (${USE_PKGBUILD}, 1)
 pack-script-%: pack-script-pb-% ;
