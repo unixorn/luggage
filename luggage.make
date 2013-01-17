@@ -263,9 +263,6 @@ compile_package_pb: payload modify_packageroot
 		--version ${PACKAGE_VERSION} \
 		${PB_EXTRA_ARGS} \
 		${PAYLOAD_D}/${PACKAGE_FILE}
-LUGGAGE_LOCAL:=$(dir $(word $(words $(MAKEFILE_LIST)), \
-	$(MAKEFILE_LIST)))/luggage.local
--include $(LUGGAGE_LOCAL)
 
 ifeq (${USE_PKGBUILD}, 1)
 compile_package: compile_package_pb ;
