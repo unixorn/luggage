@@ -52,6 +52,9 @@ DITTO=/usr/bin/ditto
 
 PACKAGEMAKER=/usr/local/bin/packagemaker
 
+# Optionally, build packages with pkgbuild
+PKGBUILD=/usr/bin/pkgbuild
+
 # Must be on an HFS+ filesystem. Yes, I know some network servers will do
 # their best to preserve the resource forks, but it isn't worth the aggravation
 # to fight with them.
@@ -74,6 +77,19 @@ PAYLOAD_D=${SCRATCH_D}/payload
 
 PM_EXTRA_ARGS=--verbose --no-recommend --no-relocate
 PM_FILTER=--filter "/CVS$$" --filter "/\.svn$$" --filter "/\.cvsignore$$" --filter "/\.cvspass$$" --filter "/(\._)?\.DS_Store$$" --filter "/\.git$$" --filter "/\.gitignore$$"
+
+# package build parameters
+#
+# just like packagemaker, pkgbuild munges permissions unless you tell it not to.
+
+PB_EXTRA_ARGS=--ownership preserve
+
+
+# pkgbuild can build payload free packages, but you have to say if you want one.
+
+ifeq (${NO_PAYLOAD}, 1)
+PB_EXTRA_ARGS+=" --nopayload"
+endif
 
 # Set to false if you want your package to install to volumes other than the boot volume
 ROOT_ONLY=true
@@ -123,6 +139,15 @@ USER_TEMPLATE=${WORK_D}/System/Library/User\ Template
 USER_TEMPLATE_PREFERENCES=${USER_TEMPLATE}/English.lproj/Library/Preferences
 USER_TEMPLATE_PICTURES=${USER_TEMPLATE}/English.lproj/Pictures
 
+
+LUGGAGE_LOCAL:=$(dir $(word $(words $(MAKEFILE_LIST)), \
+	$(MAKEFILE_LIST)))/luggage.local
+-include $(LUGGAGE_LOCAL)
+
+
+.EXPORT_ALL_VARIABLES:
+
+
 # target stanzas
 
 help::
@@ -150,6 +175,18 @@ package_root:
 # this pseudo_payload can easily be overridden in your makefile
 
 pseudo_payload: l_usr_local
+
+scriptdir_pm: pseudo_payload
+	@sudo mkdir -p ${SCRIPT_D}
+
+scriptdir_pb: pseudo_payload
+	@sudo mkdir -p ${SCRIPT_D}
+
+ifeq (${USE_PKGBUILD}, 1)
+scriptdir: scriptdir_pb ;
+else
+scriptdir: scriptdir_pm ;
+endif
 
 scriptdir: pseudo_payload
 	@sudo mkdir -p ${SCRIPT_D}
@@ -204,12 +241,12 @@ pkgls: prep_pkg
 	lsbom -p fmUG ${PAYLOAD_D}/${PACKAGE_FILE}/Contents/Archive.bom
 
 payload: payload_d package_root scratchdir scriptdir resourcedir
-	make ${PAYLOAD}
+	make -e ${PAYLOAD}
 	@-echo
 
-compile_package: payload .luggage.pkg.plist modify_packageroot
+compile_package_pm: payload .luggage.pkg.plist modify_packageroot
 	@-sudo rm -fr ${PAYLOAD_D}/${PACKAGE_FILE}
-	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE}"
+	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE} with ${PACKAGEMAKER}"
 	sudo ${PACKAGEMAKER} --root ${WORK_D} \
 		--id ${PACKAGE_ID} \
 		${PM_FILTER} \
@@ -221,9 +258,22 @@ compile_package: payload .luggage.pkg.plist modify_packageroot
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
 
-LUGGAGE_LOCAL:=$(dir $(word $(words $(MAKEFILE_LIST)), \
-	$(MAKEFILE_LIST)))/luggage.local
--include $(LUGGAGE_LOCAL)
+compile_package_pb: payload modify_packageroot
+	@-sudo rm -fr ${PAYLOAD_D}/${PACKAGE_FILE}
+	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE} with ${PKGBUILD}."
+	sudo ${PKGBUILD} --root ${WORK_D} \
+		--identifier ${PACKAGE_ID} \
+		${PM_FILTER} \
+		--scripts ${SCRIPT_D} \
+		--version ${PACKAGE_VERSION} \
+		${PB_EXTRA_ARGS} \
+		${PAYLOAD_D}/${PACKAGE_FILE}
+
+ifeq (${USE_PKGBUILD}, 1)
+compile_package: compile_package_pb ;
+else
+compile_package: compile_package_pm ;
+endif
 
 ${PACKAGE_PLIST}: ${PLIST_PATH}
 # override this stanza if you have a different plist you want to use as
@@ -668,8 +718,34 @@ pack-Library-Preferences-%: % l_Library_Preferences
 pack-ppd-%: % l_PPDs
 	@sudo ${INSTALL} -m 664 -g admin -o root "${<}" ${WORK_D}/Library/Printers/PPDs/Contents/Resources
 
-pack-script-%: % scriptdir
-	@sudo ${INSTALL} -m 755 "${<}" ${SCRIPT_D}
+pack-script-pb-%: % scriptdir
+	@echo "******************************************************************"
+	@echo ""
+	@echo "Using ${PKGBUILD}, make sure scripts are"
+	@echo "named preinstall/postinstall"
+	@echo ""
+	@echo "Also check your pack-script-* stanzas in PAYLOAD"
+	@echo ""
+	@echo "******************************************************************"
+	@sudo ${INSTALL} -o root -g wheel -m 755 "${<}" ${SCRIPT_D}
+
+pack-script-pm-%: % scriptdir
+	@echo "******************************************************************"
+	@echo ""
+	@echo "Using ${PACKAGEMAKER}, make sure script names and PAYLOAD are"
+	@echo "named preflight/postflight"
+	@echo ""
+	@echo "Also check your pack-script-* stanzas in PAYLOAD"
+	@echo ""
+	@echo "******************************************************************"
+	@sudo ${INSTALL} -o root -g wheel -m 755 "${<}" ${SCRIPT_D}
+
+ifeq (${USE_PKGBUILD}, 1)
+pack-script-%: pack-script-pb-% ;
+else
+pack-script-%: pack-script-pb-% ;
+endif
+
 
 pack-resource-%: % resourcedir
 	@sudo ${INSTALL} -m 755 "${<}" ${RESOURCE_D}
