@@ -176,18 +176,6 @@ package_root:
 
 pseudo_payload: l_usr_local
 
-scriptdir_pm: pseudo_payload
-	@sudo mkdir -p ${SCRIPT_D}
-
-scriptdir_pb: pseudo_payload
-	@sudo mkdir -p ${SCRIPT_D}
-
-ifeq (${USE_PKGBUILD}, 1)
-scriptdir: scriptdir_pb ;
-else
-scriptdir: scriptdir_pm ;
-endif
-
 scriptdir: pseudo_payload
 	@sudo mkdir -p ${SCRIPT_D}
 
@@ -743,7 +731,7 @@ pack-script-pm-%: % scriptdir
 ifeq (${USE_PKGBUILD}, 1)
 pack-script-%: pack-script-pb-% ;
 else
-pack-script-%: pack-script-pb-% ;
+pack-script-%: pack-script-pm-% ;
 endif
 
 
