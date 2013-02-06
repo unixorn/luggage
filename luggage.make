@@ -503,7 +503,7 @@ l_Library: l_root
 l_Library_Application_Support: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Application\ Support
 	@sudo chown root:admin ${WORK_D}/Library/Application\ Support
-	@sudo chmod 775 ${WORK_D}/Library/Application\ Support
+	@sudo chmod 755 ${WORK_D}/Library/Application\ Support
 
 l_Library_Application_Support_Adobe: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Application\ Support/Adobe
