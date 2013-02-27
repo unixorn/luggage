@@ -807,31 +807,31 @@ pack-usr-local-sbin-%: % l_usr_local_sbin
 pack-var-root-Library-Preferences-%: % l_private_var_root_Library_Preferences
 	@sudo ${INSTALL} -m 600 -g wheel -o root "${<}" ${WORK_D}/private/var/root/Library/Preferences
 
-pack-man-%: l_usr_man
+pack-man-%: % l_usr_man
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man
 
-pack-man1-%: l_usr_man_man1
+pack-man1-%: % l_usr_man_man1
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man1
 
-pack-man2-%: l_usr_man_man2
+pack-man2-%: % l_usr_man_man2
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man2
 
-pack-man3-%: l_usr_man_man3
+pack-man3-%: % l_usr_man_man3
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man3
 
-pack-man4-%: l_usr_man_man4
+pack-man4-%: % l_usr_man_man4
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man4
 
-pack-man5-%: l_usr_man_man5
+pack-man5-%: % l_usr_man_man5
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man5
 
-pack-man6-%: l_usr_man_man6
+pack-man6-%: % l_usr_man_man6
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man6
 
-pack-man7-%: l_usr_man_man7
+pack-man7-%: % l_usr_man_man7
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man7
 
-pack-man8-%: l_usr_man_man8
+pack-man8-%: % l_usr_man_man8
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man8
 
 pack-hookscript-%: % l_private_etc_hooks
