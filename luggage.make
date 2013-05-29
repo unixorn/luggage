@@ -248,14 +248,26 @@ compile_package_pm: payload .luggage.pkg.plist modify_packageroot
 
 compile_package_pb: payload modify_packageroot
 	@-sudo rm -fr ${PAYLOAD_D}/${PACKAGE_FILE}
+	@echo "Analyzing ${PAYLOAD_D}/${PACKAGE_FILE}."
+	sudo ${PKGBUILD} --analyze --root ${WORK_D} \
+		--identifier ${PACKAGE_ID} \
+		${PM_FILTER} \
+		--scripts ${SCRIPT_D} \
+		--version ${PACKAGE_VERSION} \
+		--quiet \
+		${PB_EXTRA_ARGS} \
+		"${PAYLOAD_D}/${PACKAGE_NAME}.plist"
+	@echo "Setting BundleIsRelocatable to false."	
+	/usr/libexec/PlistBuddy -c "Set :0:BundleIsRelocatable bool false" "${PAYLOAD_D}/${PACKAGE_NAME}.plist"
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE} with ${PKGBUILD}."
 	sudo ${PKGBUILD} --root ${WORK_D} \
+		--component-plist "${PAYLOAD_D}/${PACKAGE_NAME}.plist" \
 		--identifier ${PACKAGE_ID} \
 		${PM_FILTER} \
 		--scripts ${SCRIPT_D} \
 		--version ${PACKAGE_VERSION} \
 		${PB_EXTRA_ARGS} \
-		${PAYLOAD_D}/${PACKAGE_FILE}
+		"${PAYLOAD_D}/${PACKAGE_FILE}"
 
 ifeq (${USE_PKGBUILD}, 1)
 compile_package: compile_package_pb ;
