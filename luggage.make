@@ -319,6 +319,16 @@ l_private_var_lib_puppet: l_var_lib_puppet
 
 l_private_var_db: l_var_db
 
+l_private_var_db_dslocal: l_var_db_dslocal
+
+l_private_var_db_dslocal_nodes: l_var_db_dslocal_nodes
+
+l_private_var_db_dslocal_nodes_Default: l_var_db_dslocal_nodes_Default
+
+l_private_var_db_dslocal_nodes_Default_groups: l_var_db_dslocal_nodes_Default_groups
+
+l_private_var_db_dslocal_nodes_Default_users: l_var_db_dslocal_nodes_Default_users
+
 l_private_var_root: l_var_root
 
 l_private_var_root_Library: l_var_root_Library
@@ -469,6 +479,31 @@ l_var_db: l_var
 	@sudo mkdir -p ${WORK_D}/private/var/db
 	@sudo chown -R root:wheel ${WORK_D}/private/var/db
 	@sudo chmod -R 755 ${WORK_D}/private/var/db
+
+l_var_db_dslocal: l_var_db
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal
+	@sudo chmod -R 755 ${WORK_D}/private/var/db/dslocal
+
+l_var_db_dslocal_nodes: l_var_db_dslocal
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal/nodes
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal/nodes
+	@sudo chmod -R 755 ${WORK_D}/private/var/db/dslocal/nodes
+
+l_var_db_dslocal_nodes_Default: l_var_db_dslocal_nodes
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal/nodes/Default
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal/nodes/Default
+	@sudo chmod -R 600 ${WORK_D}/private/var/db/dslocal/nodes/Default
+
+l_var_db_dslocal_nodes_Default_groups: l_var_db_dslocal_nodes_Default
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal/nodes/Default/groups
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal/nodes/Default/groups
+	@sudo chmod -R 700 ${WORK_D}/private/var/db/dslocal/nodes/Default/groups
+
+l_var_db_dslocal_nodes_Default_users: l_var_db_dslocal_nodes_Default
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal/nodes/Default/users
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal/nodes/Default/users
+	@sudo chmod -R 700 ${WORK_D}/private/var/db/dslocal/nodes/Default/users
 
 l_var_root: l_var
 	@sudo mkdir -p ${WORK_D}/private/var/root
@@ -803,6 +838,16 @@ pack-usr-local-bin-%: % l_usr_local_bin
 
 pack-usr-local-sbin-%: % l_usr_local_sbin
 	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/usr/local/sbin
+
+pack-var-db-dslocal-nodes-Default-groups-%: % l_private_var_db_dslocal_nodes_Default_groups
+	@echo "Packing file ${<} into the DSLocal Default node."
+	@echo "You may wish to consider alternatives to this."
+	@sudo ${INSTALL} -m 600 -g wheel -o root "${<}" ${WORK_D}/private/var/db/dslocal/nodes/Default/groups
+
+pack-var-db-dslocal-nodes-Default-users-%: % l_private_var_db_dslocal_nodes_Default_users
+	@echo "Packing file ${<} into the DSLocal Default node."
+	@echo "You may wish to consider alternatives to this."
+	@sudo ${INSTALL} -m 600 -g wheel -o root "${<}" ${WORK_D}/private/var/db/dslocal/nodes/Default/users
 
 pack-var-root-Library-Preferences-%: % l_private_var_root_Library_Preferences
 	@sudo ${INSTALL} -m 600 -g wheel -o root "${<}" ${WORK_D}/private/var/root/Library/Preferences
