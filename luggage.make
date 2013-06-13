@@ -612,6 +612,11 @@ l_Library_Receipts: l_Library
 	@sudo chown root:admin ${WORK_D}/Library/Receipts
 	@sudo chmod 775 ${WORK_D}/Library/Receipts
 
+l_Library_ScreenSavers: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/Screen\ Savers
+	@sudo chown root:wheel ${WORK_D}/Library/Screen\ Savers
+	@sudo chmod 755 ${WORK_D}/Library/Screen\ Savers
+
 l_Library_User_Pictures: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/User\ Pictures
 	@sudo chown root:admin ${WORK_D}/Library/User\ Pictures
@@ -770,6 +775,11 @@ pack-Library-LaunchDaemons-%: % l_Library_LaunchDaemons
 
 pack-Library-Preferences-%: % l_Library_Preferences
 	@sudo ${INSTALL} -m 644 -g admin -o root "${<}" ${WORK_D}/Library/Preferences
+
+pack-Library-ScreenSavers-%: % l_Library_ScreenSavers
+	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Library/Screen\ Savers/"${<}"
+	@sudo chown -R root:wheel ${WORK_D}/Library/Screen\ Savers/"${<}"
+	@sudo chmod 755 ${WORK_D}/Library/Screen\ Savers/"${<}"
 
 pack-ppd-%: % l_PPDs
 	@sudo ${INSTALL} -m 664 -g admin -o root "${<}" ${WORK_D}/Library/Printers/PPDs/Contents/Resources
