@@ -82,7 +82,7 @@ PM_FILTER=--filter "/CVS$$" --filter "/\.svn$$" --filter "/\.cvsignore$$" --filt
 #
 # just like packagemaker, pkgbuild munges permissions unless you tell it not to.
 
-PB_EXTRA_ARGS=--ownership preserve
+PB_EXTRA_ARGS=--ownership preserve --quiet
 
 
 # pkgbuild can build payload free packages, but you have to say if you want one.
@@ -174,7 +174,11 @@ package_root:
 # in it, so we're including the /usr/local directory, since it's harmless.
 # this pseudo_payload can easily be overridden in your makefile
 
-pseudo_payload: l_usr_local
+ifeq (${USE_PKGBUILD}, 1)
+pseudo_payload: ;
+else
+pseudo_payload: l_usr_local;
+endif
 
 scriptdir: pseudo_payload
 	@sudo mkdir -p ${SCRIPT_D}
@@ -246,10 +250,11 @@ compile_package_pm: payload .luggage.pkg.plist modify_packageroot
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
 
-compile_package_pb: payload modify_packageroot
+compile_package_pb: payload .luggage.pkg.component.plist modify_packageroot
 	@-sudo rm -fr ${PAYLOAD_D}/${PACKAGE_FILE}
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE} with ${PKGBUILD}."
 	sudo ${PKGBUILD} --root ${WORK_D} \
+		--component-plist ${SCRATCH_D}/luggage.pkg.component.plist \
 		--identifier ${PACKAGE_ID} \
 		${PM_FILTER} \
 		--scripts ${SCRIPT_D} \
@@ -284,6 +289,17 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 		> .luggage.pkg.plist
 	@sudo ${CP} .luggage.pkg.plist ${SCRATCH_D}/luggage.pkg.plist
 	@rm .luggage.pkg.plist ${PACKAGE_PLIST}
+
+.luggage.pkg.component.plist:
+	@sudo ${PKGBUILD} --quiet --analyze --root ${WORK_D} \
+		${PM_FILTER} \
+		${SCRATCH_D}/luggage.pkg.component.plist
+	@echo "Disabling bundle relocation."
+	@success=0; index=0 ; \
+	while [[ $$success -eq 0 ]] ; \
+		do /usr/libexec/PlistBuddy -c "Set :$$index:BundleIsRelocatable bool false" ${SCRATCH_D}/luggage.pkg.component.plist 2>/dev/null; \
+		success=$$?; (( index = index + 1)) ; \
+	done
 
 local_pkg:
 	@${CP} -R ${PAYLOAD_D}/${PACKAGE_FILE} .
