@@ -294,11 +294,20 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 	@sudo ${PKGBUILD} --quiet --analyze --root ${WORK_D} \
 		${PM_FILTER} \
 		${SCRATCH_D}/luggage.pkg.component.plist
-	@echo "Disabling bundle relocation."
-	@success=0; index=0 ; \
-	while [[ $$success -eq 0 ]] ; \
-		do /usr/libexec/PlistBuddy -c "Set :$$index:BundleIsRelocatable bool false" ${SCRATCH_D}/luggage.pkg.component.plist 2>/dev/null; \
-		success=$$?; (( index = index + 1)) ; \
+	@success=0; index=0;\
+	while : ; do\
+		/usr/libexec/PlistBuddy -c "Print :$$index" $${SCRATCH_D}/luggage.pkg.component.plist 1>/dev/null 2>&1;\
+		success=$$?;\
+		if [[ $$success -eq 0 ]]; then\
+			/usr/libexec/PlistBuddy -c "Print :$$index:BundleIsRelocatable" $${SCRATCH_D}/luggage.pkg.component.plist 1>/dev/null 2>&1;\
+			if [[ $$? -eq 0 ]]; then\
+				/usr/libexec/PlistBuddy -c "Set :$$index:BundleIsRelocatable bool false" $${SCRATCH_D}/luggage.pkg.component.plist;\
+			else\
+				/usr/libexec/PlistBuddy -c "Add :$$index:BundleIsRelocatable bool false" $${SCRATCH_D}/luggage.pkg.component.plist;\
+			fi;\
+		fi;\
+		(( index = index + 1 ));\
+		[[ $$success -eq 0 ]] || break;\
 	done
 
 local_pkg:
