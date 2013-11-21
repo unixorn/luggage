@@ -294,7 +294,9 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 	@sudo ${PKGBUILD} --quiet --analyze --root ${WORK_D} \
 		${PM_FILTER} \
 		${SCRATCH_D}/luggage.pkg.component.plist
-	@success=0; index=0;\
+	@if [[ ! -f $${SCRATCH_D}/luggage.pkg.component.plist ]]; then echo "Error disabling bundle relocation: No component plist found!" 2>&1; else \
+	echo "Disabling bundle relocation." 2>&1;\
+	success=0; index=0;\
 	while : ; do\
 		/usr/libexec/PlistBuddy -c "Print :$$index" $${SCRATCH_D}/luggage.pkg.component.plist 1>/dev/null 2>&1;\
 		success=$$?;\
@@ -308,7 +310,7 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 		fi;\
 		(( index = index + 1 ));\
 		[[ $$success -eq 0 ]] || break;\
-	done
+	done; fi
 
 local_pkg:
 	@${CP} -R ${PAYLOAD_D}/${PACKAGE_FILE} .
