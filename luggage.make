@@ -49,7 +49,7 @@ CP=/bin/cp
 INSTALL=/usr/bin/install
 DITTO=/usr/bin/ditto
 
-PACKAGEMAKER=/Developer/usr/bin/packagemaker
+PACKAGEMAKER=/usr/bin/packagemaker
 
 # Must be on an HFS+ filesystem. Yes, I know some network servers will do
 # their best to preserve the resource forks, but it isn't worth the aggravation
