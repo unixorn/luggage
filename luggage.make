@@ -227,10 +227,21 @@ prep_pkg: clean compile_package
 
 pkg: prep_pkg local_pkg
 
-pkgls: prep_pkg
+ifeq (${USE_PKGBUILD}, 1)
+pkgls: pkgls_pb ;
+else
+pkgls: pkgls_pm ;
+endif
+
+pkgls_pm: prep_pkg
 	@echo
 	@echo
 	lsbom -p fmUG ${PAYLOAD_D}/${PACKAGE_FILE}/Contents/Archive.bom
+
+pkgls_pb: prep_pkg
+	@echo
+	@echo
+	lsbom -p fmUG `pkgutil --bom ${PAYLOAD_D}/${PACKAGE_FILE}`
 
 payload: payload_d package_root scratchdir scriptdir resourcedir
 	make -e ${PAYLOAD}
