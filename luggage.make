@@ -327,10 +327,20 @@ l_private: l_root
 	@sudo chown -R root:wheel ${WORK_D}/private
 	@sudo chmod -R 755 ${WORK_D}/private
 
+l_private_bin: l_private
+	@sudo mkdir -p ${WORK_D}/private/bin
+	@sudo chown -R root:wheel ${WORK_D}/private/bin
+	@sudo chmod -R 755 ${WORK_D}/private/bin
+
 l_private_etc: l_private
 	@sudo mkdir -p ${WORK_D}/private/etc
 	@sudo chown -R root:wheel ${WORK_D}/private/etc
 	@sudo chmod -R 755 ${WORK_D}/private/etc
+
+l_private_sbin: l_private
+	@sudo mkdir -p ${WORK_D}/private/sbin
+	@sudo chown -R root:wheel ${WORK_D}/private/sbin
+	@sudo chmod -R 755 ${WORK_D}/private/sbin
 
 l_private_etc_hooks: l_etc_hooks
 
@@ -861,8 +871,14 @@ pack-User-Template-Library-Application-Support-Oracle-Java-Deployment-%: % l_Sys
 
 # posixy file stanzas
 
+pack-bin-%: % l_private_bin
+	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/private/bin
+
 pack-etc-%: % l_private_etc
 	@sudo ${INSTALL} -m 644 -g wheel -o root "${<}" ${WORK_D}/private/etc
+
+pack-sbin-%: % l_private_sbin
+	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/private/sbin
 
 pack-usr-bin-%: % l_usr_bin
 	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/usr/bin
