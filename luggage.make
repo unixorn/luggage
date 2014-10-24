@@ -50,10 +50,11 @@ CP=/bin/cp
 INSTALL=/usr/bin/install
 DITTO=/usr/bin/ditto
 
+PKGBUILD=/usr/bin/pkgbuild
+
+# Optionally, build packages with packagemaker, set USE_PKGBUILD=0
 PACKAGEMAKER=/usr/local/bin/packagemaker
 
-# Optionally, build packages with pkgbuild
-PKGBUILD=/usr/bin/pkgbuild
 
 # Must be on an HFS+ filesystem. Yes, I know some network servers will do
 # their best to preserve the resource forks, but it isn't worth the aggravation
@@ -174,10 +175,10 @@ package_root:
 # in it, so we're including the /usr/local directory, since it's harmless.
 # this pseudo_payload can easily be overridden in your makefile
 
-ifeq (${USE_PKGBUILD}, 1)
-pseudo_payload: ;
-else
+ifeq (${USE_PKGBUILD}, 0)
 pseudo_payload: l_usr_local;
+else
+pseudo_payload: ;
 endif
 
 scriptdir: pseudo_payload
@@ -227,10 +228,10 @@ prep_pkg: clean compile_package
 
 pkg: prep_pkg local_pkg
 
-ifeq (${USE_PKGBUILD}, 1)
-pkgls: pkgls_pb ;
-else
+ifeq (${USE_PKGBUILD}, 0)
 pkgls: pkgls_pm ;
+else
+pkgls: pkgls_pb ;
 endif
 
 pkgls_pm: prep_pkg
@@ -273,10 +274,10 @@ compile_package_pb: payload .luggage.pkg.component.plist modify_packageroot
 		${PB_EXTRA_ARGS} \
 		${PAYLOAD_D}/${PACKAGE_FILE}
 
-ifeq (${USE_PKGBUILD}, 1)
-compile_package: compile_package_pb ;
-else
+ifeq (${USE_PKGBUILD}, 0)
 compile_package: compile_package_pm ;
+else
+compile_package: compile_package_pb ;
 endif
 
 ${PACKAGE_PLIST}: ${PLIST_PATH}
@@ -843,10 +844,10 @@ pack-script-pm-%: % scriptdir
 	@echo "******************************************************************"
 	@sudo ${INSTALL} -o root -g wheel -m 755 "${<}" ${SCRIPT_D}
 
-ifeq (${USE_PKGBUILD}, 1)
-pack-script-%: pack-script-pb-% ;
-else
+ifeq (${USE_PKGBUILD}, 0)
 pack-script-%: pack-script-pm-% ;
+else
+pack-script-%: pack-script-pb-% ;
 endif
 
 
@@ -970,7 +971,7 @@ pack-applications-%: % l_Applications
 	@sudo chown -R root:admin ${WORK_D}/Applications/"${<}"
 	@sudo chmod 755 ${WORK_D}/Applications/"${<}"
 
-# Allow for packaging software dirctly from the /Applications directory.	
+# Allow for packaging software dirctly from the /Applications directory.
 pack-from-applications-%: /Applications/% l_Applications
 	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}"${<}"
 	@sudo chown -R root:admin ${WORK_D}"${<}"
