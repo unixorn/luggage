@@ -923,6 +923,9 @@ pack-bin-%: % l_private_bin
 pack-etc-%: % l_private_etc
 	@sudo ${INSTALL} -m 644 -g wheel -o root "${<}" ${WORK_D}/private/etc
 
+pack-etc-openldap-%: % l_etc_openldap
+	@sudo install -m 644 -o root -g wheel "${<}" "${PKGROOT}"/etc/openldap
+
 pack-sbin-%: % l_private_sbin
 	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/private/sbin
 
