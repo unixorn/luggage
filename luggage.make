@@ -1,3 +1,18 @@
+Skip to content
+ This repository
+Explore
+Gist
+Blog
+Help
+Clay Caviness ccaviness
+
+31  Unwatch
+  Unstar 166
+ Fork 46unixorn/luggage
+ branch: master  luggage / luggage.make
+Joe Blockunixorn 26 days ago shellshock revealed we didn't have support for /bin or /sbin.
+12 contributors Joe BlockJeremy ReichmanClay CavinessChristoph von Gabler-SahmbrentbbAllister BanksNate FeltonMike BoylanRicky ChilcottRussell HancoxRusty MyersTimothy Sutton
+1004 lines (785 sloc)  37.808 kb RawBlameHistory
 #
 #   Copyright 2009 Joe Block <jpb@ApesSeekingKnowledge.net>
 #
@@ -52,8 +67,9 @@ DITTO=/usr/bin/ditto
 
 PKGBUILD=/usr/bin/pkgbuild
 
-# Optionally, build packages with packagemaker; set USE_PKGBUILD=0
+# Optionally, build packages with packagemaker, set USE_PKGBUILD=0
 PACKAGEMAKER=/usr/local/bin/packagemaker
+
 
 # Must be on an HFS+ filesystem. Yes, I know some network servers will do
 # their best to preserve the resource forks, but it isn't worth the aggravation
@@ -82,7 +98,7 @@ PM_FILTER=--filter "/CVS$$" --filter "/\.svn$$" --filter "/\.cvsignore$$" --filt
 #
 # just like packagemaker, pkgbuild munges permissions unless you tell it not to.
 
-PB_EXTRA_ARGS=--ownership preserve
+PB_EXTRA_ARGS=--ownership preserve --quiet
 
 
 # pkgbuild can build payload free packages, but you have to say if you want one.
@@ -174,18 +190,10 @@ package_root:
 # in it, so we're including the /usr/local directory, since it's harmless.
 # this pseudo_payload can easily be overridden in your makefile
 
-pseudo_payload: l_usr_local
-
-scriptdir_pm: pseudo_payload
-	@sudo mkdir -p ${SCRIPT_D}
-
-scriptdir_pb: pseudo_payload
-	@sudo mkdir -p ${SCRIPT_D}
-
 ifeq (${USE_PKGBUILD}, 0)
-scriptdir: scriptdir_pm ;
+pseudo_payload: l_usr_local;
 else
-scriptdir: scriptdir_pb ;
+pseudo_payload: ;
 endif
 
 scriptdir: pseudo_payload
@@ -235,10 +243,21 @@ prep_pkg: clean compile_package
 
 pkg: prep_pkg local_pkg
 
-pkgls: prep_pkg
+ifeq (${USE_PKGBUILD}, 0)
+pkgls: pkgls_pm ;
+else
+pkgls: pkgls_pb ;
+endif
+
+pkgls_pm: prep_pkg
 	@echo
 	@echo
 	lsbom -p fmUG ${PAYLOAD_D}/${PACKAGE_FILE}/Contents/Archive.bom
+
+pkgls_pb: prep_pkg
+	@echo
+	@echo
+	lsbom -p fmUG `pkgutil --bom ${PAYLOAD_D}/${PACKAGE_FILE}`
 
 payload: payload_d package_root scratchdir scriptdir resourcedir
 	make -e ${PAYLOAD}
@@ -258,10 +277,11 @@ compile_package_pm: payload .luggage.pkg.plist modify_packageroot
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
 
-compile_package_pb: payload modify_packageroot
+compile_package_pb: payload .luggage.pkg.component.plist modify_packageroot
 	@-sudo rm -fr ${PAYLOAD_D}/${PACKAGE_FILE}
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE} with ${PKGBUILD}."
 	sudo ${PKGBUILD} --root ${WORK_D} \
+		--component-plist ${SCRATCH_D}/luggage.pkg.component.plist \
 		--identifier ${PACKAGE_ID} \
 		${PM_FILTER} \
 		--scripts ${SCRIPT_D} \
@@ -297,6 +317,17 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 	@sudo ${CP} .luggage.pkg.plist ${SCRATCH_D}/luggage.pkg.plist
 	@rm .luggage.pkg.plist ${PACKAGE_PLIST}
 
+.luggage.pkg.component.plist:
+	@sudo ${PKGBUILD} --quiet --analyze --root ${WORK_D} \
+		${PM_FILTER} \
+		${SCRATCH_D}/luggage.pkg.component.plist
+	@echo "Disabling bundle relocation."
+	@success=0; index=0 ; \
+	while [[ $$success -eq 0 ]] ; \
+		do /usr/libexec/PlistBuddy -c "Set :$$index:BundleIsRelocatable bool false" ${SCRATCH_D}/luggage.pkg.component.plist 2>/dev/null; \
+		success=$$?; (( index = index + 1)) ; \
+	done
+
 local_pkg:
 	@${CP} -R ${PAYLOAD_D}/${PACKAGE_FILE} .
 
@@ -312,10 +343,20 @@ l_private: l_root
 	@sudo chown -R root:wheel ${WORK_D}/private
 	@sudo chmod -R 755 ${WORK_D}/private
 
+l_private_bin: l_private
+	@sudo mkdir -p ${WORK_D}/private/bin
+	@sudo chown -R root:wheel ${WORK_D}/private/bin
+	@sudo chmod -R 755 ${WORK_D}/private/bin
+
 l_private_etc: l_private
 	@sudo mkdir -p ${WORK_D}/private/etc
 	@sudo chown -R root:wheel ${WORK_D}/private/etc
 	@sudo chmod -R 755 ${WORK_D}/private/etc
+
+l_private_sbin: l_private
+	@sudo mkdir -p ${WORK_D}/private/sbin
+	@sudo chown -R root:wheel ${WORK_D}/private/sbin
+	@sudo chmod -R 755 ${WORK_D}/private/sbin
 
 l_private_etc_hooks: l_etc_hooks
 
@@ -330,6 +371,16 @@ l_private_var_lib: l_var_lib
 l_private_var_lib_puppet: l_var_lib_puppet
 
 l_private_var_db: l_var_db
+
+l_private_var_db_dslocal: l_var_db_dslocal
+
+l_private_var_db_dslocal_nodes: l_var_db_dslocal_nodes
+
+l_private_var_db_dslocal_nodes_Default: l_var_db_dslocal_nodes_Default
+
+l_private_var_db_dslocal_nodes_Default_groups: l_var_db_dslocal_nodes_Default_groups
+
+l_private_var_db_dslocal_nodes_Default_users: l_var_db_dslocal_nodes_Default_users
 
 l_private_var_root: l_var_root
 
@@ -482,6 +533,31 @@ l_var_db: l_var
 	@sudo chown -R root:wheel ${WORK_D}/private/var/db
 	@sudo chmod -R 755 ${WORK_D}/private/var/db
 
+l_var_db_dslocal: l_var_db
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal
+	@sudo chmod -R 755 ${WORK_D}/private/var/db/dslocal
+
+l_var_db_dslocal_nodes: l_var_db_dslocal
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal/nodes
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal/nodes
+	@sudo chmod -R 755 ${WORK_D}/private/var/db/dslocal/nodes
+
+l_var_db_dslocal_nodes_Default: l_var_db_dslocal_nodes
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal/nodes/Default
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal/nodes/Default
+	@sudo chmod -R 600 ${WORK_D}/private/var/db/dslocal/nodes/Default
+
+l_var_db_dslocal_nodes_Default_groups: l_var_db_dslocal_nodes_Default
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal/nodes/Default/groups
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal/nodes/Default/groups
+	@sudo chmod -R 700 ${WORK_D}/private/var/db/dslocal/nodes/Default/groups
+
+l_var_db_dslocal_nodes_Default_users: l_var_db_dslocal_nodes_Default
+	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal/nodes/Default/users
+	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal/nodes/Default/users
+	@sudo chmod -R 700 ${WORK_D}/private/var/db/dslocal/nodes/Default/users
+
 l_var_root: l_var
 	@sudo mkdir -p ${WORK_D}/private/var/root
 	@sudo chown -R root:wheel ${WORK_D}/private/var/root
@@ -515,12 +591,27 @@ l_Library: l_root
 l_Library_Application_Support: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Application\ Support
 	@sudo chown root:admin ${WORK_D}/Library/Application\ Support
-	@sudo chmod 775 ${WORK_D}/Library/Application\ Support
+	@sudo chmod 755 ${WORK_D}/Library/Application\ Support
 
 l_Library_Application_Support_Adobe: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Application\ Support/Adobe
 	@sudo chown root:admin ${WORK_D}/Library/Application\ Support/Adobe
 	@sudo chmod 775 ${WORK_D}/Library/Application\ Support/Adobe
+
+l_Library_Application_Support_Oracle: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/Application\ Support/Oracle
+	@sudo chown root:admin ${WORK_D}/Library/Application\ Support/Oracle
+	@sudo chmod 755 ${WORK_D}/Library/Application\ Support/Oracle
+
+l_Library_Application_Support_Oracle_Java: l_Library_Application_Support_Oracle
+	@sudo mkdir -p ${WORK_D}/Library/Application\ Support/Oracle/Java
+	@sudo chown root:admin ${WORK_D}/Library/Application\ Support/Oracle/Java
+	@sudo chmod 755 ${WORK_D}/Library/Application\ Support/Oracle/Java
+
+l_Library_Application_Support_Oracle_Java_Deployment: l_Library_Application_Support_Oracle_Java
+	@sudo mkdir -p ${WORK_D}/Library/Application\ Support/Oracle/Java/Deployment
+	@sudo chown root:admin ${WORK_D}/Library/Application\ Support/Oracle/Java/Deployment
+	@sudo chmod 755 ${WORK_D}/Library/Application\ Support/Oracle/Java/Deployment
 
 l_Library_Desktop_Pictures: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Desktop\ Pictures
@@ -573,6 +664,11 @@ l_Library_Receipts: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/Receipts
 	@sudo chown root:admin ${WORK_D}/Library/Receipts
 	@sudo chmod 775 ${WORK_D}/Library/Receipts
+
+l_Library_ScreenSavers: l_Library
+	@sudo mkdir -p ${WORK_D}/Library/Screen\ Savers
+	@sudo chown root:wheel ${WORK_D}/Library/Screen\ Savers
+	@sudo chmod 755 ${WORK_D}/Library/Screen\ Savers
 
 l_Library_User_Pictures: l_Library
 	@sudo mkdir -p ${WORK_D}/Library/User\ Pictures
@@ -635,20 +731,20 @@ l_System_Library_Extensions: l_System_Library
 	@sudo chmod -R 755 ${WORK_D}/System/Library/Extensions
 
 l_System_Library_User_Template: l_System_Library
-	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj
-	@sudo chown -R root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj
-	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template
-	@sudo chmod -R 755 ${WORK_D}/System/Library/User\ Template/English.lproj
+	@sudo mkdir -p ${USER_TEMPLATE}/English.lproj
+	@sudo chown -R root:wheel ${USER_TEMPLATE}/English.lproj
+	@sudo chmod 700 ${USER_TEMPLATE}
+	@sudo chmod -R 755 ${USER_TEMPLATE}/English.lproj
 
 l_System_Library_User_Template_Library: l_System_Library_User_Template
-	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library
-	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library
-	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library
+	@sudo mkdir -p ${USER_TEMPLATE}/English.lproj/Library
+	@sudo chown root:wheel ${USER_TEMPLATE}/English.lproj/Library
+	@sudo chmod 700 ${USER_TEMPLATE}/English.lproj/Library
 
 l_System_Library_User_Template_Pictures: l_System_Library_User_Template
-	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Pictures
-	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Pictures
-	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Pictures
+	@sudo mkdir -p ${USER_TEMPLATE_PICTURES}
+	@sudo chown root:wheel ${USER_TEMPLATE_PICTURES}
+	@sudo chmod 700 ${USER_TEMPLATE_PICTURES}
 
 l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Library
 	@sudo mkdir -p ${USER_TEMPLATE_PREFERENCES}
@@ -656,24 +752,39 @@ l_System_Library_User_Template_Preferences: l_System_Library_User_Template_Libra
 	@sudo chmod -R 700 ${USER_TEMPLATE_PREFERENCES}
 
 l_System_Library_User_Template_Library_Application_Support: l_System_Library_User_Template_Library
-	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support
-	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support
-	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support
+	@sudo mkdir -p ${USER_TEMPLATE}/English.lproj/Library/Application\ Support
+	@sudo chown root:wheel ${USER_TEMPLATE}/English.lproj/Library/Application\ Support
+	@sudo chmod 700 ${USER_TEMPLATE}/English.lproj/Library/Application\ Support
 
 l_System_Library_User_Template_Library_Application_Support_Firefox: l_System_Library_User_Template_Library_Application_Support
-	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox
-	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox
-	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox
+	@sudo mkdir -p ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox
+	@sudo chown root:wheel ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox
+	@sudo chmod 700 ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox
 
 l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles: l_System_Library_User_Template_Library_Application_Support_Firefox
-	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles
-	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles
-	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles
+	@sudo mkdir -p ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox/Profiles
+	@sudo chown root:wheel ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox/Profiles
+	@sudo chmod 700 ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox/Profiles
 
 l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles_Default: l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles
-	@sudo mkdir -p ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
-	@sudo chown root:wheel ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
-	@sudo chmod 700 ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+	@sudo mkdir -p ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+	@sudo chown root:wheel ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+	@sudo chmod 700 ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+
+l_System_Library_User_Template_Library_Application_Support_Oracle: l_System_Library_User_Template_Library
+	@sudo mkdir -p ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle
+	@sudo chown root:wheel ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle
+	@sudo chmod 700 ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle
+
+l_System_Library_User_Template_Library_Application_Support_Oracle_Java: l_System_Library_User_Template_Library_Application_Support_Oracle
+	@sudo mkdir -p ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle/Java
+	@sudo chown root:wheel ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle/Java
+	@sudo chmod 700 ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle/Java
+
+l_System_Library_User_Template_Library_Application_Support_Oracle_Java_Deployment: l_System_Library_User_Template_Library_Application_Support_Oracle_Java
+	@sudo mkdir -p ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle/Java/Deployment
+	@sudo chown root:wheel ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle/Java/Deployment
+	@sudo chmod 700 ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle/Java/Deployment
 
 # These user domain locations are for use in rare circumstances, and
 # as a last resort only for repackaging applications that use them.
@@ -703,6 +814,9 @@ pack-site-python-%: % l_Library_Python_26_site_packages
 pack-siteruby-%: % l_Library_Ruby_Site_1_8
 	@sudo ${INSTALL} -m 644 -g wheel -o root "${<}" ${WORK_D}/Library/Ruby/Site/1.8
 
+pack-Library-Application-Support-Oracle-Java-Deployment-%: % l_Library_Application_Support_Oracle_Java_Deployment
+	@sudo ${INSTALL} -m 644 -g admin -o root "${<}" ${WORK_D}/Library/Application\ Support/Oracle/Java/Deployment
+
 pack-Library-Fonts-%: % l_Library_Fonts
 	@sudo ${INSTALL} -m 664 -g admin -o root "${<}" ${WORK_D}/Library/Fonts
 
@@ -714,6 +828,11 @@ pack-Library-LaunchDaemons-%: % l_Library_LaunchDaemons
 
 pack-Library-Preferences-%: % l_Library_Preferences
 	@sudo ${INSTALL} -m 644 -g admin -o root "${<}" ${WORK_D}/Library/Preferences
+
+pack-Library-ScreenSavers-%: % l_Library_ScreenSavers
+	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}/Library/Screen\ Savers/"${<}"
+	@sudo chown -R root:wheel ${WORK_D}/Library/Screen\ Savers/"${<}"
+	@sudo chmod 755 ${WORK_D}/Library/Screen\ Savers/"${<}"
 
 pack-ppd-%: % l_PPDs
 	@sudo ${INSTALL} -m 664 -g admin -o root "${<}" ${WORK_D}/Library/Printers/PPDs/Contents/Resources
@@ -741,9 +860,9 @@ pack-script-pm-%: % scriptdir
 	@sudo ${INSTALL} -o root -g wheel -m 755 "${<}" ${SCRIPT_D}
 
 ifeq (${USE_PKGBUILD}, 0)
-pack-script-%: pack-script-pb-% ;
-else
 pack-script-%: pack-script-pm-% ;
+else
+pack-script-%: pack-script-pb-% ;
 endif
 
 
@@ -761,12 +880,21 @@ pack-user-picture-%: % l_Library_Desktop_Pictures
 	@sudo ${INSTALL} -m 644 "${<}" ${WORK_D}/Library/Desktop\ Pictures
 
 pack-User-Template-Library-Application-Support-Firefox-Profiles-Default-%: % l_System_Library_User_Template_Library_Application_Support_Firefox_Profiles_Default
-	@sudo ${INSTALL} -m 644 "${<}" ${WORK_D}/System/Library/User\ Template/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+	@sudo ${INSTALL} -m 644 "${<}" ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Firefox/Profiles/a7e8aa9f.default
+
+pack-User-Template-Library-Application-Support-Oracle-Java-Deployment-%: % l_System_Library_User_Template_Library_Application_Support_Oracle_Java_Deployment
+	@sudo ${INSTALL} -m 644 -g wheel -o root "${<}" ${USER_TEMPLATE}/English.lproj/Library/Application\ Support/Oracle/Java/Deployment
 
 # posixy file stanzas
 
+pack-bin-%: % l_private_bin
+	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/private/bin
+
 pack-etc-%: % l_private_etc
 	@sudo ${INSTALL} -m 644 -g wheel -o root "${<}" ${WORK_D}/private/etc
+
+pack-sbin-%: % l_private_sbin
+	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/private/sbin
 
 pack-usr-bin-%: % l_usr_bin
 	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/usr/bin
@@ -780,34 +908,44 @@ pack-usr-local-bin-%: % l_usr_local_bin
 pack-usr-local-sbin-%: % l_usr_local_sbin
 	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/usr/local/sbin
 
+pack-var-db-dslocal-nodes-Default-groups-%: % l_private_var_db_dslocal_nodes_Default_groups
+	@echo "Packing file ${<} into the DSLocal Default node."
+	@echo "You may wish to consider alternatives to this."
+	@sudo ${INSTALL} -m 600 -g wheel -o root "${<}" ${WORK_D}/private/var/db/dslocal/nodes/Default/groups
+
+pack-var-db-dslocal-nodes-Default-users-%: % l_private_var_db_dslocal_nodes_Default_users
+	@echo "Packing file ${<} into the DSLocal Default node."
+	@echo "You may wish to consider alternatives to this."
+	@sudo ${INSTALL} -m 600 -g wheel -o root "${<}" ${WORK_D}/private/var/db/dslocal/nodes/Default/users
+
 pack-var-root-Library-Preferences-%: % l_private_var_root_Library_Preferences
 	@sudo ${INSTALL} -m 600 -g wheel -o root "${<}" ${WORK_D}/private/var/root/Library/Preferences
 
-pack-man-%: l_usr_man
+pack-man-%: % l_usr_man
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man
 
-pack-man1-%: l_usr_man_man1
+pack-man1-%: % l_usr_man_man1
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man1
 
-pack-man2-%: l_usr_man_man2
+pack-man2-%: % l_usr_man_man2
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man2
 
-pack-man3-%: l_usr_man_man3
+pack-man3-%: % l_usr_man_man3
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man3
 
-pack-man4-%: l_usr_man_man4
+pack-man4-%: % l_usr_man_man4
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man4
 
-pack-man5-%: l_usr_man_man5
+pack-man5-%: % l_usr_man_man5
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man5
 
-pack-man6-%: l_usr_man_man6
+pack-man6-%: % l_usr_man_man6
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man6
 
-pack-man7-%: l_usr_man_man7
+pack-man7-%: % l_usr_man_man7
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man7
 
-pack-man8-%: l_usr_man_man8
+pack-man8-%: % l_usr_man_man8
 	@sudo ${INSTALL} -m 0644 -g wheel -o root "${<}" ${WORK_D}/usr/share/man/man8
 
 pack-hookscript-%: % l_private_etc_hooks
