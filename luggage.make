@@ -529,6 +529,16 @@ l_var_db: l_var
 	@sudo chown -R root:wheel ${WORK_D}/private/var/db
 	@sudo chmod -R 755 ${WORK_D}/private/var/db
 
+l_var_db_ConfigurationProfiles: l_var_db
+	@sudo mkdir -p ${WORK_D}/private/var/db/ConfigurationProfiles
+	@sudo chown root:wheel ${WORK_D}/private/var/db/ConfigurationProfiles
+	@sudo chmod 755 ${WORK_D}/private/var/db/ConfigurationProfiles
+
+l_var_db_ConfigurationProfiles_Setup: l_var_db_ConfigurationProfiles
+	@sudo mkdir -p ${WORK_D}/private/var/db/ConfigurationProfiles/Setup
+	@sudo chown root:wheel ${WORK_D}/private/var/db/ConfigurationProfiles/Setup
+	@sudo chmod 700 ${WORK_D}/private/var/db/ConfigurationProfiles/Setup
+
 l_var_db_dslocal: l_var_db
 	@sudo mkdir -p ${WORK_D}/private/var/db/dslocal
 	@sudo chown -R root:wheel ${WORK_D}/private/var/db/dslocal
@@ -643,7 +653,7 @@ l_Library_Preferences_OpenDirectory_Configurations: l_Library_Preferences_OpenDi
 	@sudo mkdir -p ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
 	@sudo chown root:wheel ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
 	@sudo chmod 755 ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
-	
+
 l_Library_Preferences_OpenDirectory_Configurations_LDAPv3: l_Library_Preferences_OpenDirectory_Configurations
 	@sudo mkdir -p ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
 	@sudo chown root:wheel ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
@@ -927,6 +937,9 @@ pack-usr-local-bin-%: % l_usr_local_bin
 
 pack-usr-local-sbin-%: % l_usr_local_sbin
 	@sudo ${INSTALL} -m 755 -g wheel -o root "${<}" ${WORK_D}/usr/local/sbin
+
+pack-var-db-ConfigurationProfiles-Setup-%: % l_var_db_ConfigurationProfiles_Setup
+	sudo ${INSTALL} -m 644 "${<}" ${WORK_D}/private/var/db/ConfigurationProfiles/Setup
 
 pack-var-db-dslocal-nodes-Default-groups-%: % l_private_var_db_dslocal_nodes_Default_groups
 	@echo "Packing file ${<} into the DSLocal Default node."
