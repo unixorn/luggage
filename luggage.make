@@ -50,10 +50,11 @@ CP=/bin/cp
 INSTALL=/usr/bin/install
 DITTO=/usr/bin/ditto
 
-PACKAGEMAKER=/usr/local/bin/packagemaker
-
-# Optionally, build packages with pkgbuild
+USE_PKGBUILD=1
 PKGBUILD=/usr/bin/pkgbuild
+
+# Optionally, build packages with packagemaker; set USE_PKGBUILD=0
+PACKAGEMAKER=/usr/local/bin/packagemaker
 
 # Must be on an HFS+ filesystem. Yes, I know some network servers will do
 # their best to preserve the resource forks, but it isn't worth the aggravation
@@ -848,7 +849,7 @@ pack-applications-%: % l_Applications
 	@sudo chown -R root:admin ${WORK_D}/Applications/"${<}"
 	@sudo chmod 755 ${WORK_D}/Applications/"${<}"
 
-# Allow for packaging software dirctly from the /Applications directory.	
+# Allow for packaging software dirctly from the /Applications directory.
 pack-from-applications-%: /Applications/% l_Applications
 	@sudo ${DITTO} --noqtn "${<}" ${WORK_D}"${<}"
 	@sudo chown -R root:admin ${WORK_D}"${<}"
