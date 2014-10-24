@@ -50,7 +50,6 @@ CP=/bin/cp
 INSTALL=/usr/bin/install
 DITTO=/usr/bin/ditto
 
-USE_PKGBUILD=1
 PKGBUILD=/usr/bin/pkgbuild
 
 # Optionally, build packages with packagemaker; set USE_PKGBUILD=0
@@ -183,10 +182,10 @@ scriptdir_pm: pseudo_payload
 scriptdir_pb: pseudo_payload
 	@sudo mkdir -p ${SCRIPT_D}
 
-ifeq (${USE_PKGBUILD}, 1)
-scriptdir: scriptdir_pb ;
-else
+ifeq (${USE_PKGBUILD}, 0)
 scriptdir: scriptdir_pm ;
+else
+scriptdir: scriptdir_pb ;
 endif
 
 scriptdir: pseudo_payload
@@ -270,10 +269,10 @@ compile_package_pb: payload modify_packageroot
 		${PB_EXTRA_ARGS} \
 		${PAYLOAD_D}/${PACKAGE_FILE}
 
-ifeq (${USE_PKGBUILD}, 1)
-compile_package: compile_package_pb ;
-else
+ifeq (${USE_PKGBUILD}, 0)
 compile_package: compile_package_pm ;
+else
+compile_package: compile_package_pb ;
 endif
 
 ${PACKAGE_PLIST}: ${PLIST_PATH}
@@ -741,10 +740,10 @@ pack-script-pm-%: % scriptdir
 	@echo "******************************************************************"
 	@sudo ${INSTALL} -o root -g wheel -m 755 "${<}" ${SCRIPT_D}
 
-ifeq (${USE_PKGBUILD}, 1)
+ifeq (${USE_PKGBUILD}, 0)
 pack-script-%: pack-script-pb-% ;
 else
-pack-script-%: pack-script-pb-% ;
+pack-script-%: pack-script-pm-% ;
 endif
 
 
