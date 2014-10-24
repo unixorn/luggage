@@ -1,18 +1,3 @@
-Skip to content
- This repository
-Explore
-Gist
-Blog
-Help
-Clay Caviness ccaviness
-
-31  Unwatch
-  Unstar 166
- Fork 46unixorn/luggage
- branch: master  luggage / luggage.make
-Joe Blockunixorn 26 days ago shellshock revealed we didn't have support for /bin or /sbin.
-12 contributors Joe BlockJeremy ReichmanClay CavinessChristoph von Gabler-SahmbrentbbAllister BanksNate FeltonMike BoylanRicky ChilcottRussell HancoxRusty MyersTimothy Sutton
-1004 lines (785 sloc)  37.808 kb RawBlameHistory
 #
 #   Copyright 2009 Joe Block <jpb@ApesSeekingKnowledge.net>
 #
