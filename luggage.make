@@ -827,13 +827,13 @@ bundle-%: % payload_d
 	sudo ${CP} "${<}" ${PAYLOAD_D}
 
 pack-open-directory-%: % l_Library_Preferences_OpenDirectory
-	sudo install -m 600 -o root -g whel $< ${WORK_D}/Library/Preferences/OpenDirectory
+	sudo install -m 600 -o root -g wheel "${<}" ${WORK_D}/Library/Preferences/OpenDirectory
 
 pack-open-directory-configurations-%: % l_Library_Preferences_OpenDirectory_Configurations
-	sudo install -m 600 -o root -g whel $< ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
+	sudo install -m 600 -o root -g wheel "${<}" ${WORK_D}/Library/Preferences/OpenDirectory/Configurations
 
 pack-open-directory-configurations-ldapv3-%: % l_Library_Preferences_OpenDirectory_Configurations_LDAPv3
-	sudo install -m 600 -o root -g wheel $< ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
+	sudo install -m 600 -o root -g wheel "${<}" ${WORK_D}/Library/Preferences/OpenDirectory/Configurations/LDAPv3
 
 pack-directory-service-preference-%: % l_Library_Preferences_DirectoryService
 	sudo install -m 600 -o root -g admin "${<}" ${WORK_D}/Library/Preferences/DirectoryService
