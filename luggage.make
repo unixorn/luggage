@@ -315,9 +315,9 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 		if [[ $$success -eq 0 ]]; then\
 			/usr/libexec/PlistBuddy -c "Print :$$index:BundleIsRelocatable" $${SCRATCH_D}/luggage.pkg.component.plist 1>/dev/null 2>&1;\
 			if [[ $$? -eq 0 ]]; then\
-				/usr/libexec/PlistBuddy -c "Set :$$index:BundleIsRelocatable false" $${SCRATCH_D}/luggage.pkg.component.plist;\
+				sudo /usr/libexec/PlistBuddy -c "Set :$$index:BundleIsRelocatable false" $${SCRATCH_D}/luggage.pkg.component.plist;\
 			else\
-				/usr/libexec/PlistBuddy -c "Add :$$index:BundleIsRelocatable bool false" $${SCRATCH_D}/luggage.pkg.component.plist;\
+				sudo /usr/libexec/PlistBuddy -c "Add :$$index:BundleIsRelocatable bool false" $${SCRATCH_D}/luggage.pkg.component.plist;\
 			fi;\
 		fi;\
 		(( index = index + 1 ));\
