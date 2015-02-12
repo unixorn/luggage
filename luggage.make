@@ -55,6 +55,9 @@ PKGBUILD=/usr/bin/pkgbuild
 # Optionally, build packages with packagemaker, set USE_PKGBUILD=0
 PACKAGEMAKER=/usr/local/bin/packagemaker
 
+# Use productbuild to create flat distribution bundles - pkg-dist
+PRODUCTBUILD=/usr/bin/productbuild
+PKG_DIST=${TITLE}_dist-${PACKAGE_VERSION}.pkg
 
 # Must be on an HFS+ filesystem. Yes, I know some network servers will do
 # their best to preserve the resource forks, but it isn't worth the aggravation
@@ -228,6 +231,8 @@ prep_pkg: clean compile_package
 
 pkg: prep_pkg local_pkg
 
+pkg-dist: prep_pkg create_flatdist
+
 ifeq (${USE_PKGBUILD}, 0)
 pkgls: pkgls_pm ;
 else
@@ -274,6 +279,14 @@ compile_package_pb: payload .luggage.pkg.component.plist modify_packageroot
 		${PB_EXTRA_ARGS} \
 		${PAYLOAD_D}/${PACKAGE_FILE}
 
+create_flatdist:
+	@-sudo rm -fr ${PAYLOAD_D}/${PKG_DIST}
+	@echo "Creating flat distribution package ${PKG_DIST}..."
+	@-sudo ${PRODUCTBUILD} --quiet \
+	--package ${PAYLOAD_D}/${PACKAGE_FILE} \
+	${PAYLOAD_D}/${PKG_DIST}
+	@${CP} -R ${PAYLOAD_D}/${PKG_DIST} .
+
 ifeq (${USE_PKGBUILD}, 0)
 compile_package: compile_package_pm ;
 else
@@ -296,8 +309,8 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 		sed "s/{PACKAGE_ID}/${PACKAGE_ID}/g" | \
 		sed "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" | \
 		sed "s/{PM_RESTART}/${PM_RESTART}/g" | \
-        sed "s/{PLIST_FLAVOR}/${PLIST_FLAVOR}/g" | \
-           	sed "s/{ROOT_ONLY}/${ROOT_ONLY}/g" \
+		sed "s/{PLIST_FLAVOR}/${PLIST_FLAVOR}/g" | \
+		sed "s/{ROOT_ONLY}/${ROOT_ONLY}/g" \
 		> .luggage.pkg.plist
 	@sudo ${CP} .luggage.pkg.plist ${SCRATCH_D}/luggage.pkg.plist
 	@rm .luggage.pkg.plist ${PACKAGE_PLIST}
