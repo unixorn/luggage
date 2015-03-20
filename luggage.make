@@ -327,7 +327,8 @@ define PYTHON_PLISTER
 import plistlib
 component = plistlib.readPlist('${SCRATCH_D}/luggage.pkg.component.plist')
 for payload in component:
-    payload['BundleIsRelocatable'] = False
+    if payload.get('BundleIsRelocatable'):
+        payload['BundleIsRelocatable'] = False
 plistlib.writePlist(component, '${SCRATCH_D}/luggage.pkg.component.plist')
 endef
 
