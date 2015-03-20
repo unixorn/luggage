@@ -323,8 +323,19 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 	echo "Disabling bundle relocation." 2>&1;\
 	fi
 
+define PYTHON_PLISTER
+import plistlib
+component = plistlib.readPlist('${SCRATCH_D}/luggage.pkg.component.plist')
+for payload in component:
+    if payload.get('BundleIsRelocatable'):
+        payload['BundleIsRelocatable'] = False
+plistlib.writePlist(component, '${SCRATCH_D}/luggage.pkg.component.plist')
+endef
+
+export PYTHON_PLISTER
+
 kill_relocate:
-	@ sudo /usr/bin/python -c "import plistlib; component = plistlib.readPlist('${SCRATCH_D}/luggage.pkg.component.plist'); component[0]['BundleIsRelocatable'] = False; plistlib.writePlist(component, '${SCRATCH_D}/luggage.pkg.component.plist')"
+	@-sudo /usr/bin/python -c "$$PYTHON_PLISTER"
 
 local_pkg:
 	@${CP} -R ${PAYLOAD_D}/${PACKAGE_FILE} .
