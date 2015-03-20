@@ -267,7 +267,7 @@ compile_package_pm: payload .luggage.pkg.plist modify_packageroot
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
 
-compile_package_pb: payload .luggage.pkg.component.plist modify_packageroot
+compile_package_pb: payload .luggage.pkg.component.plist kill_relocate modify_packageroot
 	@-sudo rm -fr ${PAYLOAD_D}/${PACKAGE_FILE}
 	@echo "Creating ${PAYLOAD_D}/${PACKAGE_FILE} with ${PKGBUILD}."
 	sudo ${PKGBUILD} --root ${WORK_D} \
@@ -321,21 +321,10 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 		${SCRATCH_D}/luggage.pkg.component.plist
 	@if [[ ! -f $${SCRATCH_D}/luggage.pkg.component.plist ]]; then echo "Error disabling bundle relocation: No component plist found!" 2>&1; else \
 	echo "Disabling bundle relocation." 2>&1;\
-	success=0; index=0;\
-	while : ; do\
-		/usr/libexec/PlistBuddy -c "Print :$$index" $${SCRATCH_D}/luggage.pkg.component.plist 1>/dev/null 2>&1;\
-		success=$$?;\
-		if [[ $$success -eq 0 ]]; then\
-			/usr/libexec/PlistBuddy -c "Print :$$index:BundleIsRelocatable" $${SCRATCH_D}/luggage.pkg.component.plist 1>/dev/null 2>&1;\
-			if [[ $$? -eq 0 ]]; then\
-				sudo /usr/libexec/PlistBuddy -c "Set :$$index:BundleIsRelocatable false" $${SCRATCH_D}/luggage.pkg.component.plist;\
-			else\
-				sudo /usr/libexec/PlistBuddy -c "Add :$$index:BundleIsRelocatable bool false" $${SCRATCH_D}/luggage.pkg.component.plist;\
-			fi;\
-		fi;\
-		(( index = index + 1 ));\
-		[[ $$success -eq 0 ]] || break;\
-	done; fi
+	fi
+
+kill_relocate:
+	@ sudo /usr/bin/python -c "import plistlib; component = plistlib.readPlist('${SCRATCH_D}/luggage.pkg.component.plist'); component[0]['BundleIsRelocatable'] = False; plistlib.writePlist(component, '${SCRATCH_D}/luggage.pkg.component.plist')"
 
 local_pkg:
 	@${CP} -R ${PAYLOAD_D}/${PACKAGE_FILE} .
