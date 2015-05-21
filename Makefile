@@ -47,7 +47,9 @@ bootstrap_files: bootstrap_directory
 	@sudo ${INSTALL} -m 755 -o root -g wheel app2luggage.rb /usr/local/bin/app2luggage.rb
 	@if [ ! -x "/usr/local/bin/packagemaker" ]; then \
 		packagemaker=`find /Applications -name PackageMaker`; \
-		sudo ln -s $$packagemaker /usr/local/bin/packagemaker; \
+		if [ $$packagemaker ]; then \
+			sudo ln -s $$packagemaker /usr/local/bin/packagemaker; \
+		fi \
 	fi
 
 bootstrap_directory:
