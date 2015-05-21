@@ -48,7 +48,6 @@ bootstrap_files: bootstrap_directory
 	@if [ ! -x "/usr/local/bin/packagemaker" ]; then \
 		packagemaker=`find /Applications -name PackageMaker`; \
 		if [ $$packagemaker ]; then \
-			echo "PackageMaker found!"; \
 			sudo ln -s $$packagemaker /usr/local/bin/packagemaker; \
 		fi \
 	fi
