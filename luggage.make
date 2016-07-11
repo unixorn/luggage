@@ -50,6 +50,8 @@ CP=/bin/cp
 INSTALL=/usr/bin/install
 DITTO=/usr/bin/ditto
 
+NCPUS:=$(shell expr $$(sysctl -n hw.ncpu) + 2)
+
 PKGBUILD=/usr/bin/pkgbuild
 
 # Optionally, build packages with packagemaker, set USE_PKGBUILD=0
@@ -70,6 +72,7 @@ RESOURCE_D=${SCRATCH_D}/resources
 EN_LPROJ_D=${RESOURCE_D}/en.lproj
 WORK_D=${SCRATCH_D}/root
 PAYLOAD_D=${SCRATCH_D}/payload
+BUILD_D=${SCRATCH_D}/build
 
 # packagemaker parameters
 #
@@ -189,6 +192,11 @@ scriptdir: pseudo_payload
 
 resourcedir:
 	@sudo mkdir -p ${RESOURCE_D}
+
+builddir:
+	@sudo mkdir -p ${BUILD_D}
+	@sudo chmod 755 ${BUILD_D}
+	@sudo chown ${USER} ${BUILD_D}
 
 # add sidecar items, not install payload, into the Resources directory
 # sidecar items may support the installer: welcome file, strings files
@@ -441,6 +449,11 @@ l_usr_local_bin: l_usr_local
 	@sudo mkdir -p ${WORK_D}/usr/local/bin
 	@sudo chown -R root:wheel ${WORK_D}/usr/local/bin
 	@sudo chmod -R 755 ${WORK_D}/usr/local/bin
+
+l_usr_local_include: l_usr_local
+	@sudo mkdir -p ${WORK_D}/usr/local/include
+	@sudo chown -R root:wheel ${WORK_D}/usr/local/include
+	@sudo chmod -R 755 ${WORK_D}/usr/local/include
 
 l_usr_local_lib: l_usr_local
 	@sudo mkdir -p ${WORK_D}/usr/local/lib
