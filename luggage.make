@@ -258,7 +258,7 @@ pkgls_pb: prep_pkg
 	lsbom -p fmUG `pkgutil --bom ${PAYLOAD_D}/${PACKAGE_FILE}`
 
 payload: payload_d package_root scratchdir scriptdir resourcedir
-	make -f $(word 1,$(MAKEFILE_LIST)) -e ${PAYLOAD}
+	$(MAKE) -f $(word 1,$(MAKEFILE_LIST)) -e ${PAYLOAD}
 	@-echo
 
 compile_package_pm: payload .luggage.pkg.plist modify_packageroot
