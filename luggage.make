@@ -13,11 +13,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-STAMP:=$(shell date +%Y%m%d)
-YY:=$(shell date +%Y)
-MM:=$(shell date +%m)
-DD:=$(shell date +%d)
-BUILD_DATE=$(shell date -u "+%Y-%m-%dT%H:%M:%SZ")
+export STAMP:=$(shell date +%Y%m%d)
+export YY:=$(shell date +%Y)
+export MM:=$(shell date +%m)
+export DD:=$(shell date +%d)
+export BUILD_DATE=$(shell date -u "+%Y-%m-%dT%H:%M:%SZ")
 
 # mai plist haz a flavor
 PLIST_FLAVOR=plist
@@ -152,9 +152,6 @@ LUGGAGE_LOCAL:=$(dir $(word $(words $(MAKEFILE_LIST)), \
 -include $(LUGGAGE_LOCAL)
 
 
-.EXPORT_ALL_VARIABLES:
-
-
 # target stanzas
 
 help::
@@ -235,7 +232,7 @@ zip: scratchdir compile_package
 modify_packageroot:
 	@echo "If you need to override permissions or ownerships, override modify_packageroot in your Makefile"
 
-prep_pkg: clean compile_package
+prep_pkg: compile_package
 
 pkg: prep_pkg local_pkg
 
@@ -327,7 +324,7 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 	@sudo ${PKGBUILD} --quiet --analyze --root ${WORK_D} \
 		${PM_FILTER} \
 		${SCRATCH_D}/luggage.pkg.component.plist
-	@if [[ ! -f $${SCRATCH_D}/luggage.pkg.component.plist ]]; then echo "Error disabling bundle relocation: No component plist found!" 2>&1; else \
+	@if [[ ! -f ${SCRATCH_D}/luggage.pkg.component.plist ]]; then echo "Error disabling bundle relocation: No component plist found!" 2>&1; else \
 	echo "Disabling bundle relocation." 2>&1;\
 	fi
 
@@ -343,7 +340,7 @@ endef
 export PYTHON_PLISTER
 
 kill_relocate:
-	@-sudo /usr/bin/python -c "$$PYTHON_PLISTER"
+	@-sudo /usr/bin/python -c "$${PYTHON_PLISTER}"
 
 local_pkg:
 	@${CP} -R ${PAYLOAD_D}/${PACKAGE_FILE} .
