@@ -65,6 +65,7 @@ PKG_DIST=${TITLE}_dist-${PACKAGE_VERSION}.pkg
 # their best to preserve the resource forks, but it isn't worth the aggravation
 # to fight with them.
 LUGGAGE_TMP=/tmp/the_luggage
+OUTPUT_D=.
 SCRATCH_D=${LUGGAGE_TMP}/${PACKAGE_NAME}
 
 SCRIPT_D=${SCRATCH_D}/scripts
@@ -134,7 +135,6 @@ DMG_FORMAT=${DMG_FORMAT_CODE} ${DMG_FORMAT_OPTION}
 .PHONY: debug
 .PHONY: dmg
 .PHONY: grind_package
-.PHONY: local_pkg
 .PHONY: package_root
 .PHONY: payload_d
 .PHONY: pkg
@@ -204,6 +204,10 @@ enlprojdir: resourcedir
 scratchdir:
 	@sudo mkdir -p ${SCRATCH_D}
 
+outputdir:
+	[[ ${OUTPUT_D} == "." ]] || sudo mkdir -p ${OUTPUT_D}
+	[[ ${OUTPUT_D} == "." ]] || sudo chmod 775 ${OUTPUT_D}
+
 # user targets
 
 clean:
@@ -212,14 +216,15 @@ clean:
 superclean:
 	@sudo rm -fr ${LUGGAGE_TMP}
 
-dmg: scratchdir compile_package
+dmg: scratchdir outputdir compile_package
 	@echo "Wrapping ${PACKAGE_NAME}..."
 	@sudo hdiutil create -volname ${PACKAGE_NAME} \
 		-srcfolder ${PAYLOAD_D} \
 		-uid 99 -gid 99 \
 		-ov \
 		-format ${DMG_FORMAT} \
-		${DMG_NAME}
+		${SCRATCH_D}/${DMG_NAME}
+	sudo ${CP} ${SCRATCH_D}/${DMG_NAME} ${OUTPUT_D}/
 
 zip: scratchdir compile_package
 	@echo "Zipping ${PACKAGE_NAME}..."
@@ -227,14 +232,15 @@ zip: scratchdir compile_package
 		--noqtn --noacl \
 		--sequesterRsrc \
 		${PAYLOAD_D} \
-		${ZIP_NAME}
+		${SCRATCH_D}/${ZIP_NAME}
+	sudo ${CP} ${SCRATCH_D}/${ZIP_NAME} ${OUTPUT_D}/
 
 modify_packageroot:
 	@echo "If you need to override permissions or ownerships, override modify_packageroot in your Makefile"
 
 prep_pkg: compile_package
 
-pkg: prep_pkg local_pkg
+pkg: prep_pkg
 
 pkg-dist: prep_pkg create_flatdist
 
@@ -271,6 +277,7 @@ compile_package_pm: payload .luggage.pkg.plist modify_packageroot
 		--resources ${RESOURCE_D} \
 		--version ${PACKAGE_VERSION} \
 		${PM_EXTRA_ARGS} --out ${PAYLOAD_D}/${PACKAGE_FILE}
+	sudo ${CP} ${PAYLOAD_D}/${PACKAGE_FILE} ${OUTPUT_D}/
 
 compile_package_pb: payload .luggage.pkg.component.plist kill_relocate modify_packageroot
 	@-sudo rm -fr ${PAYLOAD_D}/${PACKAGE_FILE}
@@ -283,6 +290,7 @@ compile_package_pb: payload .luggage.pkg.component.plist kill_relocate modify_pa
 		--version ${PACKAGE_VERSION} \
 		${PB_EXTRA_ARGS} \
 		${PAYLOAD_D}/${PACKAGE_FILE}
+	sudo ${CP} ${PAYLOAD_D}/${PACKAGE_FILE} ${OUTPUT_D}/
 
 create_flatdist:
 	@-sudo rm -fr ${PAYLOAD_D}/${PKG_DIST}
@@ -290,7 +298,7 @@ create_flatdist:
 	@-sudo ${PRODUCTBUILD} --quiet \
 	--package ${PAYLOAD_D}/${PACKAGE_FILE} \
 	${PAYLOAD_D}/${PKG_DIST}
-	@${CP} -R ${PAYLOAD_D}/${PKG_DIST} .
+	sudo ${CP} -R ${PAYLOAD_D}/${PKG_DIST} ${OUTPUT_D}/
 
 ifeq (${USE_PKGBUILD}, 0)
 compile_package: compile_package_pm ;
@@ -301,7 +309,7 @@ endif
 ${PACKAGE_PLIST}: ${PLIST_PATH}
 # override this stanza if you have a different plist you want to use as
 # a custom local template.
-	@cat ${PLIST_PATH} > ${PACKAGE_PLIST}
+	@cat ${PLIST_PATH} > ${OUTPUT_D}/${PACKAGE_PLIST}
 
 .luggage.pkg.plist: ${PACKAGE_PLIST}
 	@cat ${PACKAGE_PLIST} | \
@@ -316,9 +324,9 @@ ${PACKAGE_PLIST}: ${PLIST_PATH}
 		sed "s/{PM_RESTART}/${PM_RESTART}/g" | \
 		sed "s/{PLIST_FLAVOR}/${PLIST_FLAVOR}/g" | \
 		sed "s/{ROOT_ONLY}/${ROOT_ONLY}/g" \
-		> .luggage.pkg.plist
-	@sudo ${CP} .luggage.pkg.plist ${SCRATCH_D}/luggage.pkg.plist
-	@rm .luggage.pkg.plist ${PACKAGE_PLIST}
+		> ${SCRATCH_D}/.luggage.pkg.plist
+	@sudo ${CP} ${SCRATCH_D}/.luggage.pkg.plist ${SCRATCH_D}/luggage.pkg.plist
+	@rm ${SCRATCH_D}/.luggage.pkg.plist ${PACKAGE_PLIST}
 
 .luggage.pkg.component.plist:
 	@sudo ${PKGBUILD} --quiet --analyze --root ${WORK_D} \
@@ -341,9 +349,6 @@ export PYTHON_PLISTER
 
 kill_relocate:
 	@-sudo /usr/bin/python -c "$${PYTHON_PLISTER}"
-
-local_pkg:
-	@${CP} -R ${PAYLOAD_D}/${PACKAGE_FILE} .
 
 # Target directory rules
 
