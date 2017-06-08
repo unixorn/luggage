@@ -135,7 +135,6 @@ DMG_FORMAT=${DMG_FORMAT_CODE} ${DMG_FORMAT_OPTION}
 .PHONY: debug
 .PHONY: dmg
 .PHONY: grind_package
-.PHONY: local_pkg
 .PHONY: package_root
 .PHONY: payload_d
 .PHONY: pkg
@@ -350,9 +349,6 @@ export PYTHON_PLISTER
 
 kill_relocate:
 	@-sudo /usr/bin/python -c "$${PYTHON_PLISTER}"
-
-local_pkg:
-	@${CP} -R ${PAYLOAD_D}/${PACKAGE_FILE} ${OUTPUT_D}/
 
 # Target directory rules
 
