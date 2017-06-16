@@ -240,7 +240,7 @@ modify_packageroot:
 
 prep_pkg: compile_package
 
-pkg: prep_pkg
+pkg: outputdir prep_pkg
 
 pkg-dist: prep_pkg create_flatdist
 
