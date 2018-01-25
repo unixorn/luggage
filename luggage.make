@@ -127,6 +127,7 @@ DMG_FORMAT_CODE=UDZO
 ZLIB_LEVEL=9
 DMG_FORMAT_OPTION=-imagekey zlib-level=${ZLIB_LEVEL}
 DMG_FORMAT=${DMG_FORMAT_CODE} ${DMG_FORMAT_OPTION}
+DMG_FS="HFS+"
 
 # Set .PHONY declarations so things don't break if someone has files in
 # their workdir with the same names as our special stanzas
@@ -222,6 +223,7 @@ dmg: scratchdir outputdir compile_package
 		-srcfolder ${PAYLOAD_D} \
 		-uid 99 -gid 99 \
 		-ov \
+		-fs ${DMG_FS} \
 		-format ${DMG_FORMAT} \
 		${SCRATCH_D}/${DMG_NAME}
 	sudo ${CP} ${SCRATCH_D}/${DMG_NAME} ${OUTPUT_D}/
